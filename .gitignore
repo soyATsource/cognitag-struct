@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# 仮想環境
+.venv/
+venv/
+env/
+
+# テスト・型チェックのキャッシュ
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# エディタ・IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ローカル環境固有の設定
+.claude/
+.env
+*.local.json
+
+# --- cognitag_struct 固有 ---
+#
+# data/ は追跡する。axes.jsonl / phrases.jsonl / frames.jsonl /
+# questions.toml / generation_style.toml / reasoning.toml の 6 つが
+# 無いと facade が起動しない。パッケージの一部である。
+#
+# 辞書本体（CogniTag_V2 の dictionary_v2.json）はここに置かない。
+# 別リポジトリで管理されており、こちらは読み取り参照するだけ。
+
+# 自分用の作業メモ。公開しない。
+# 他プロジェクトの内部事情（ホストのアドレス、非公開リポジトリの構成）と
+# 未完了作業が書いてあるため、リポジトリには載せない。
+HANDOFF.md
+NEXT_SESSION.md

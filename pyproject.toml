@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cognitag-struct"
+version = "0.1.0"
+description = "CogniTag の構造層。日本語を格構造と 2 軸カテゴリで扱い、LLM を使わずに解析と生成を行う"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# 形態素解析器。sudachidict_core は import されないが必須。
+# SudachiPy は解析エンジンだけで、辞書データを同梱していない。
+dependencies = [
+    "sudachipy>=0.6.8",
+    "sudachidict_core",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools]
+# パッケージ本体はリポジトリ直下に置いてある（cognitag_struct/ が
+# そのままパッケージになる構成ではなく、ここがパッケージのルート）。
+packages = ["cognitag_struct"]
+package-dir = { cognitag_struct = "." }
+
+[tool.setuptools.package-data]
+# データファイルを同梱する。これが無いと install 後に
+# axes.jsonl 等が見つからず、facade が動かない。
+cognitag_struct = ["data/*.jsonl", "data/*.toml"]
