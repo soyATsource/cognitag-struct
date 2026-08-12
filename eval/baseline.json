@@ -1,0 +1,54 @@
+{
+  "by_key": {
+    "modality": {
+      "passed": 43,
+      "total": 45
+    },
+    "no_question": {
+      "passed": 18,
+      "total": 18
+    },
+    "parsed": {
+      "passed": 16,
+      "total": 17
+    },
+    "policy": {
+      "passed": 17,
+      "total": 17
+    },
+    "policy_prefix": {
+      "passed": 6,
+      "total": 6
+    },
+    "question_contains": {
+      "passed": 6,
+      "total": 6
+    },
+    "tags_all": {
+      "passed": 50,
+      "total": 52
+    },
+    "text_contains": {
+      "passed": 8,
+      "total": 9
+    },
+    "text_none": {
+      "passed": 4,
+      "total": 4
+    }
+  },
+  "cases": {
+    "passed": 126,
+    "total": 129
+  },
+  "failed_ids": [
+    "emo_06",
+    "know_01",
+    "spec_05"
+  ],
+  "known_gap": {
+    "resolved": 0,
+    "total": 8
+  },
+  "resolved_gap_ids": []
+}
