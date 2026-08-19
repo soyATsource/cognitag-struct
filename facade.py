@@ -15,7 +15,7 @@
     result.questions()             # []
 
 URL も設定ファイルも要らない。pip install -e で入れておけば、
-AIAssistant からも LOGOS からも同じように import できる。
+他のプロジェクトからも同じように import できる。
 
 【HTTP を挟まない理由】
 CogniTag v2 の辞書は HTTP API（:8010）を持つが、こちらは持たない。
