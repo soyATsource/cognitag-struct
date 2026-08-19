@@ -87,6 +87,12 @@ class Token:
     #     連絡   → 普通名詞 / サ変可能 → する と結んで 1 語にする
     # pos と subpos だけでは「名詞」までしか分からない。
     subpos2: str = ""
+    # 活用型。SudachiPy の part_of_speech()[4]。「五段-カ行」「下一段-バ行」。
+    #
+    # 返答を組み立てるときに述語を活用させるために要る。
+    # 「行く」から「行きますか」「行ったんだな」を作るには、
+    # どの型で活用するかを知らなければならない（inflect.py 参照）。
+    conjugation: str = ""
     # 活用形。SudachiPy の part_of_speech()[5]。
     #
     # 「たら」と「た」はどちらも見出し語が「た」で、活用形だけが違う
@@ -103,8 +109,14 @@ class Token:
         """form / content からタグ表記を導出する。
 
         フィールドとして持たないのは、軸の値との二重管理を避けるため。
+
+        form が既定値（一般語）のときは form 由来のタグを出さない。
+        「#一般語」は何も言っていないうえ、すべての名詞に付くので
+        含意の枠を無駄に埋める。ことわざ・慣用句のように form 自体が
+        情報を持つ場合だけタグにする。
         """
-        return [f"#{self.form}"] + [f"#{value}" for value in self.content]
+        head = [] if self.form == DEFAULT_FORM else [f"#{self.form}"]
+        return head + [f"#{value}" for value in self.content]
 
     def has(self, feature: str) -> bool:
         return feature in self.features

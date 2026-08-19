@@ -1,79 +1,79 @@
-{"lemma": "行く", "required": ["NI"], "optional": ["GA", "TIME", "KARA"], "content_constraints": {"NI": ["場所", "移動"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "行ける", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所", "移動"]}, "volitional": false, "motion": true, "tags": ["#移動"]}
-{"lemma": "来る", "required": [], "optional": ["GA", "NI", "KARA", "TIME"], "content_constraints": {"NI": ["場所", "移動"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "帰る", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "行く", "required": ["NI"], "optional": ["GA", "TIME", "KARA"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "行ける", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": false, "motion": true, "tags": ["#移動"]}
+{"lemma": "来る", "required": [], "optional": ["GA", "NI", "KARA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "帰る", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["場所"], "KARA": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
 {"lemma": "戻る", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "向かう", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所", "移動"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "向かう", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
 {"lemma": "着く", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": false, "motion": true, "tags": ["#移動"]}
 {"lemma": "出る", "required": [], "optional": ["GA", "KARA", "NI", "TIME"], "content_constraints": {"KARA": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
 {"lemma": "入る", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "移動する", "required": ["NI"], "optional": ["GA", "KARA", "TIME"], "content_constraints": {"NI": ["場所", "移動"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "移動する", "required": ["NI"], "optional": ["GA", "KARA", "TIME"], "content_constraints": {"NI": ["場所"], "KARA": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
 {"lemma": "通る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
 {"lemma": "登る", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "降りる", "required": [], "optional": ["GA", "KARA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": true, "tags": ["#移動"]}
-{"lemma": "会う", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["状態"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "待つ", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "誘う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "断る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "謝る", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "言う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "話す", "required": [], "optional": ["GA", "NI", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "聞く", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "尋ねる", "required": ["NI"], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "答える", "required": [], "optional": ["GA", "NI", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "伝える", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "教える", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "呼ぶ", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "連絡する", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "相談する", "required": ["NI"], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#対人"]}
-{"lemma": "説明する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "報告する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "返事する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#伝達"]}
-{"lemma": "作る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "書く", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "読む", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "直す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "消す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "壊す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "使う", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "買う", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "売る", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "払う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "渡す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "送る", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "届ける", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "返す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "貸す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "借りる", "required": ["WO"], "optional": ["GA", "KARA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "もらう", "required": ["WO"], "optional": ["GA", "KARA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "あげる", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "捨てる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#授受"]}
-{"lemma": "探す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "見つける", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業", "#達成"]}
+{"lemma": "降りる", "required": [], "optional": ["GA", "KARA", "NI", "TIME"], "content_constraints": {"NI": ["場所"]}, "volitional": true, "motion": true, "tags": ["#移動"]}
+{"lemma": "会う", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "待つ", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "誘う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"WO": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "断る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "謝る", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "言う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "話す", "required": [], "optional": ["GA", "NI", "WO", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "聞く", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "尋ねる", "required": ["NI"], "optional": ["GA", "WO", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "答える", "required": [], "optional": ["GA", "NI", "WO", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"], "knowledge": true}
+{"lemma": "伝える", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "教える", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["学習"]}, "volitional": true, "motion": false, "tags": ["#伝達"], "knowledge": true}
+{"lemma": "呼ぶ", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "連絡する", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "相談する", "required": ["NI"], "optional": ["GA", "WO", "TIME"], "content_constraints": {"NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#対人"]}
+{"lemma": "説明する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"], "knowledge": true}
+{"lemma": "報告する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "返事する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#伝達"]}
+{"lemma": "作る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["食事", "情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "書く", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "読む", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "直す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "消す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "壊す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "使う", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "買う", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "売る", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "払う", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"WO": ["金銭"], "NI": ["人物"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "渡す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "送る", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "届ける", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "返す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "貸す", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "借りる", "required": ["WO"], "optional": ["GA", "KARA", "TIME"], "content_constraints": {"KARA": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "もらう", "required": ["WO"], "optional": ["GA", "KARA", "NI", "TIME"], "content_constraints": {"KARA": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "あげる", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"NI": ["人物"], "WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "捨てる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#授受"]}
+{"lemma": "探す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "見つける", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["道具"]}, "volitional": true, "motion": false, "tags": ["#作業", "#達成"]}
 {"lemma": "見る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "調べる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "確認する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "調べる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "確認する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
 {"lemma": "試す", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
 {"lemma": "準備する", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "片付ける", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "実装する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "修正する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "保存する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "削除する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "起動する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "停止する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "勉強する", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#作業"]}
-{"lemma": "食べる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
-{"lemma": "飲む", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
-{"lemma": "寝る", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "片付ける", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["住居"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "実装する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "修正する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "保存する", "required": ["WO"], "optional": ["GA", "NI", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "削除する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "起動する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "停止する", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["情報"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "勉強する", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {"WO": ["学習"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
+{"lemma": "食べる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["食事"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "飲む", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["飲料"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "寝る", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
 {"lemma": "起きる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
-{"lemma": "休む", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "休む", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
 {"lemma": "思う", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
 {"lemma": "考える", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#思考"]}
 {"lemma": "知る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
 {"lemma": "分かる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
-{"lemma": "覚える", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#思考"]}
-{"lemma": "忘れる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
+{"lemma": "覚える", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["学習"]}, "volitional": true, "motion": false, "tags": ["#思考"]}
+{"lemma": "忘れる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["学習"]}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
 {"lemma": "気づく", "required": ["NI"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
 {"lemma": "迷う", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#困難", "#思考"]}
 {"lemma": "悩む", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#困難", "#思考"]}
@@ -86,7 +86,7 @@
 {"lemma": "熱い", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#感覚"]}
 {"lemma": "暑い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感覚"]}
 {"lemma": "寒い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感覚"]}
-{"lemma": "痛い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#感覚"]}
+{"lemma": "痛い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"GA": ["身体"]}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#感覚"]}
 {"lemma": "眠い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#感覚", "#疲労"]}
 {"lemma": "忙しい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#感情", "#疲労"]}
 {"lemma": "楽しい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#喜び", "#感情"]}
@@ -106,16 +106,16 @@
 {"lemma": "減る", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
 {"lemma": "変わる", "required": ["GA"], "optional": ["NI", "TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
 {"lemma": "続く", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
-{"lemma": "止まる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
-{"lemma": "動く", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
-{"lemma": "壊れる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#困難", "#変化"]}
-{"lemma": "治る", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化", "#達成"]}
+{"lemma": "止まる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["交通"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
+{"lemma": "動く", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["道具"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
+{"lemma": "壊れる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["道具"]}, "volitional": false, "motion": false, "tags": ["#困難", "#変化"]}
+{"lemma": "治る", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["健康"]}, "volitional": false, "motion": false, "tags": ["#変化", "#達成"]}
 {"lemma": "上がる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
 {"lemma": "下がる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
-{"lemma": "降る", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
+{"lemma": "降る", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["自然"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
 {"lemma": "起こる", "required": ["GA"], "optional": ["TIME"], "content_constraints": {"GA": ["状態"]}, "volitional": false, "motion": false, "tags": ["#変化"]}
-{"lemma": "失敗する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#困難", "#感情"]}
-{"lemma": "成功する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#喜び", "#感情", "#達成"]}
+{"lemma": "失敗する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#つらさ", "#困難", "#感情", "#失敗"]}
+{"lemma": "成功する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#喜び", "#感情", "#達成", "#成功"]}
 {"lemma": "つらい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "苦しい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "寂しい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}

@@ -1,0 +1,150 @@
+# 活用表。述語を活用させるための語尾。
+#
+# 【なぜ表が要るか】
+# 返答を「単語＋助詞」の並びから組み立てるには、末尾の述語を
+# 場面に合わせて活用させなければならない。「行く」しか作れないと、
+# 「行きますか」「行ったんだな」「行こうか」が作れず、結局
+# 固定文を書き並べることになる。
+#
+# 【Sudachi は解析器であって生成器ではない】
+# 活用型（五段-カ行 など）は Sudachi が教えてくれるので、
+# 語幹を切って、この表の語尾を付ければよい。表は 100 行程度で足りる。
+#
+# 【書き方】
+# stem_cut  見出し語の末尾から何文字を落として語幹にするか
+# その他    活用形 -> 付ける語尾
+#
+# 使う活用形は 5 つ。
+#     imperfective  未然形。「ない」が付く形          行か
+#     continuative  連用形。「ます」が付く形          行き
+#     terminal      終止形。言い切り                  行く
+#     past          タ形。音便を含む                  行った
+#     volitional    意志形                            行こう
+
+["五段-カ行"]
+stem_cut = 1
+imperfective = "か"
+continuative = "き"
+terminal = "く"
+past = "いた"
+volitional = "こう"
+
+["五段-ガ行"]
+stem_cut = 1
+imperfective = "が"
+continuative = "ぎ"
+terminal = "ぐ"
+past = "いだ"
+volitional = "ごう"
+
+["五段-サ行"]
+stem_cut = 1
+imperfective = "さ"
+continuative = "し"
+terminal = "す"
+past = "した"
+volitional = "そう"
+
+["五段-タ行"]
+stem_cut = 1
+imperfective = "た"
+continuative = "ち"
+terminal = "つ"
+past = "った"
+volitional = "とう"
+
+["五段-ナ行"]
+stem_cut = 1
+imperfective = "な"
+continuative = "に"
+terminal = "ぬ"
+past = "んだ"
+volitional = "のう"
+
+["五段-バ行"]
+stem_cut = 1
+imperfective = "ば"
+continuative = "び"
+terminal = "ぶ"
+past = "んだ"
+volitional = "ぼう"
+
+["五段-マ行"]
+stem_cut = 1
+imperfective = "ま"
+continuative = "み"
+terminal = "む"
+past = "んだ"
+volitional = "もう"
+
+["五段-ラ行"]
+stem_cut = 1
+imperfective = "ら"
+continuative = "り"
+terminal = "る"
+past = "った"
+volitional = "ろう"
+
+["五段-ワア行"]
+stem_cut = 1
+imperfective = "わ"
+continuative = "い"
+terminal = "う"
+past = "った"
+volitional = "おう"
+
+# 一段は語幹が見出し語から「る」を落とした形。行の区別は要らない。
+["上一段"]
+stem_cut = 1
+imperfective = ""
+continuative = ""
+terminal = "る"
+past = "た"
+volitional = "よう"
+
+["下一段"]
+stem_cut = 1
+imperfective = ""
+continuative = ""
+terminal = "る"
+past = "た"
+volitional = "よう"
+
+# サ変。「する」「連絡する」。語幹は「する」を落とした形。
+["サ行変格"]
+stem_cut = 2
+imperfective = "し"
+continuative = "し"
+terminal = "する"
+past = "した"
+volitional = "しよう"
+
+# カ変。「来る」。表記が変わるので語幹は空にして全部を語尾で持つ。
+["カ行変格"]
+stem_cut = 2
+imperfective = "来"
+continuative = "来"
+terminal = "来る"
+past = "来た"
+volitional = "来よう"
+
+# 形容詞。「高い」。「ない」は未然ではなく連用に付く（高くない）ので、
+# imperfective も連用形にそろえる。
+["形容詞"]
+stem_cut = 1
+imperfective = "く"
+continuative = "く"
+terminal = "い"
+past = "かった"
+volitional = "かろう"
+
+# --- 規則から外れる語 -------------------------------------------------
+#
+# 活用型は正しいのに、その型の規則どおりにならない語。
+# 「行く」はカ行五段だが、音便は「いた」ではなく「った」。
+# 表で持てば、規則側を歪めずに済む。
+[exception."行く"]
+past = "行った"
+
+[exception."問う"]
+past = "問うた"

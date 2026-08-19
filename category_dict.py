@@ -67,6 +67,19 @@ class Entry:
     # 今はすべて 0.0 のプレースホルダ。既存の注釈パイプラインで後から埋める。
     # このモジュールは facet の具体的な値に一切依存しない。
     facet: dict[str, float] = field(default_factory=dict)
+    # コーパスでの出現回数。日常語ほど大きい。
+    #
+    # 候補語を引くときの優先度に使う。カテゴリには専門語も入っているので
+    # （「情報」に 特徴量 や 脆弱性 がある）、頻度を見ないと会話で
+    # 使わない語が選ばれる。0 は「分からない」であって「稀」ではない。
+    frequency: int = 0
+    # 会話の中核として人が選んだ語か。
+    #
+    # frequency はコーパスでの出現回数で、専門コーパス由来なので
+    # 「患者」が「鍵」より多い、といったことが起きる。会話で使う語を
+    # 優先したいので、頻度とは別に印を持たせる。数値を水増しして
+    # 順位を操作すると、頻度が何の数字か分からなくなる。
+    everyday: bool = False
     note: str = ""
 
     def tags(self) -> list[str]:
@@ -168,6 +181,8 @@ class CategoryDict:
                     content=content,
                     presupposition=list(raw.get("presupposition") or []),
                     facet=dict(raw.get("facet") or {}),
+                    frequency=int(raw.get("frequency", 0) or 0),
+                    everyday=bool(raw.get("everyday", False)),
                     note=str(raw.get("note", "")),
                 )
             )

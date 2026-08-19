@@ -94,23 +94,33 @@ class Test既存の挙動が保たれている:
         assert tokens[0].lemma == "行く"
         assert sorted(tokens[0].features) == sorted([POLITE, NEGATIVE])
 
-    def test_噛んだのトークン数が変わらない(self, tokenizer: Tokenizer):
-        """回帰確認。
+    def test_撥音便の後のダは過去として畳む(self, tokenizer: Tokenizer):
+        """「噛んだ」の「だ」は見出し語が「だ」であって「た」ではない。
 
-        なお「噛んだ」の「だ」は見出し語が「だ」であって「た」ではないため、
-        修正前から PAST として吸収されておらず独立トークンのままである
-        （AUXILIARY_FEATURES に「だ」を入れていない）。
-        「これは本だ」の「だ」も同じ見出し語・同じ活用形なので、
-        ここで PAST を付けるとコピュラを過去と誤ることになる。
+        コピュラ（これは本だ）と同じ見出し語・同じ活用形なので、
+        見出し語だけで判定すると両者を取り違える。直前が動詞かどうかで
+        分ければ区別できる。動詞に続く「だ」は過去、名詞に続く「だ」は断定。
+
+        畳まないと表層形が「噛ん」で切れ、「犬が男を噛ん、ということだな」
+        という壊れた返答になる。
         """
         tokens = tokenizer.tokenize("犬が男を噛んだ")
 
-        assert len(tokens) == 6
-        assert [t.surface for t in tokens] == ["犬", "が", "男", "を", "噛ん", "だ"]
-        da = by_surface(tokens, "だ")
-        assert da.pos == "助動詞"
-        assert da.inflection == "終止形-一般"
-        assert da.features == []
+        assert [t.surface for t in tokens] == ["犬", "が", "男", "を", "噛んだ"]
+        assert tokens[-1].features == [PAST]
+
+    def test_名詞に続くダは畳まない(self, tokenizer: Tokenizer):
+        """断定のコピュラ。過去ではない。"""
+        tokens = tokenizer.tokenize("これは本だ")
+
+        assert [t.surface for t in tokens] == ["これ", "は", "本", "だ"]
+        assert tokens[-1].features == []
+
+    def test_ダロウは畳まない(self, tokenizer: Tokenizer):
+        """見出し語は「だ」だが推量。畳むと推量の手がかりが消える。"""
+        tokens = tokenizer.tokenize("雨が降るだろう")
+
+        assert "だろう" in [t.surface for t in tokens]
 
     def test_過去は従来どおり吸収される(self, tokenizer: Tokenizer):
         tokens = tokenizer.tokenize("行きました")

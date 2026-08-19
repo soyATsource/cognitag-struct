@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from .frames import FrameDict
-from .ir import IR, CONDITION, NONE, PURPOSE, Clause, Token
+from .ir import IR, CONDITION, NONE, POLITE, PURPOSE, Clause, Token
 
 # 格助詞の表層形 -> スロット名
 CASE_PARTICLES: dict[str, str] = {
@@ -44,6 +44,10 @@ QUESTION = "#質問"
 # 含めないと「名古屋が好き」が「述語が無い」になる。
 PREDICATE_POS = ("動詞", "形容詞", "形状詞")
 MAX_CLAUSES = 2
+
+# 名詞述語の判定に使う。「これは本だ」「不安です」。
+AUXILIARY_POS = "助動詞"
+COPULA = "だ"
 
 # 「かもしれない」を構成する並び。実測では以下の 3 形態素に割れる。
 #     か(助詞/副助詞) + も(助詞/係助詞) + しれる(動詞/一般)
@@ -129,13 +133,53 @@ def _is_auxiliary_verb(tokens: list[Token], index: int) -> bool:
 
 
 def predicate_indices(tokens: list[Token], skip: set[int]) -> list[int]:
-    return [
+    found = [
         i
         for i, token in enumerate(tokens)
         if token.pos in PREDICATE_POS
         and i not in skip
         and not _is_auxiliary_verb(tokens, i)
     ]
+    if found:
+        return found
+    # 用言が 1 つも無い場合に限り、名詞述語を探す。
+    #
+    # 「これは本だ」「不安です」「容量不足だ」は日本語の普通の文だが、
+    # 述語が名詞なので用言だけを見ていると「述語が無い」になる。
+    # 用言がある文では名詞を述語にしないので、既存の解析は変わらない。
+    noun = _copula_predicate(tokens, skip)
+    return [noun] if noun is not None else []
+
+
+def _copula_predicate(tokens: list[Token], skip: set[int]) -> int | None:
+    """名詞述語の位置。無ければ None。
+
+    条件は 2 つのどちらか。
+        丁寧の「です」が畳まれている  「不安です」（POLITE が付く）
+        直後が断定の「だ」            「これは本だ」
+
+    末尾の名詞に限る。「本を読む」の「本」を述語にしないため。
+    終助詞と記号は末尾判定から除く（「本だよ」「本です。」）。
+    """
+    body = [
+        i for i, t in enumerate(tokens)
+        if t.subpos != "終助詞" and t.pos != "補助記号"
+    ]
+    if not body:
+        return None
+    last = body[-1]
+    token = tokens[last]
+
+    if last in skip or token.pos not in ("名詞", "代名詞"):
+        # 「本だ」は 本(名詞) + だ(助動詞) に割れるので、末尾が
+        # 断定の助動詞なら 1 つ前の名詞を見る。
+        if token.pos == AUXILIARY_POS and token.lemma == COPULA and len(body) >= 2:
+            previous = body[-2]
+            if tokens[previous].pos in ("名詞", "代名詞") and previous not in skip:
+                return previous
+        return None
+
+    return last if token.has(POLITE) else None
 
 
 # --- 本体 -------------------------------------------------------------------

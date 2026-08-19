@@ -88,7 +88,15 @@ class Style:
     idiom_rate: float = 0.1
     levels: dict[int, VerbosityLevel] = field(default_factory=dict)
     # 応答の型。chat.py が使う。キーは発話の種類（小文字）。
-    reply: dict[str, str] = field(default_factory=dict)
+    # 値は言い回しの一覧。同じ型でも言い方を変えられるようにしてある。
+    reply: dict[str, list[str]] = field(default_factory=dict)
+    # 慣用句の言い回しと、話題のタグ -> content 値の対応。
+    # 文言をコードに書かないという方針はここにも適用する。
+    idiom_template: str = "{surface}、というやつだな"
+    idiom_trigger: dict[str, str] = field(default_factory=dict)
+    # 会話の口（相槌・感嘆・挨拶）のタグ -> 応答の型。
+    # 順序に意味があるので dict のまま持つ（TOML の記載順を保つ）。
+    reaction: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: str | Path) -> "Style":
@@ -115,11 +123,26 @@ class Style:
         if not levels:
             raise StyleError(f"{target} に [verbosity.N] が無い")
 
+        idiom = data.get("idiom") or {}
         return cls(
             first_person=str(general.get("first_person", "私")),
             idiom_rate=float(general.get("idiom_rate", 0.1)),
             levels=levels,
-            reply={k: str(v) for k, v in (data.get("reply") or {}).items()},
+            # 応答の型は 1 つでも複数でも書ける。
+            # 文字列なら 1 件の一覧として扱い、呼ぶ側の分岐を無くす。
+            reply={
+                k: [str(x) for x in v] if isinstance(v, list) else [str(v)]
+                for k, v in (data.get("reply") or {}).items()
+            },
+            idiom_template=str(
+                idiom.get("template", "{surface}、というやつだな")
+            ),
+            idiom_trigger={
+                str(k): str(v) for k, v in (idiom.get("trigger") or {}).items()
+            },
+            reaction={
+                str(k): str(v) for k, v in (data.get("reaction") or {}).items()
+            },
         )
 
     def level(self, verbosity: int) -> VerbosityLevel:

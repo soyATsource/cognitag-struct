@@ -52,6 +52,13 @@ class Frame:
     # 意志動詞の補完は丁寧語を条件にするが、こちらは要らない。
     # 「疲れた」も主語は話者である（感情・感覚は本人しか分からない）。
     experiencer: bool = False
+    # こちらが知識を差し出すことを求める述語か。
+    #
+    # 「教えて」「説明して」を依頼として受領すると「承知した」と返すが、
+    # 知識ベースを持たないので実行できない。受けられない依頼を
+    # 受けたことにするのは、この方式で一番やってはいけないことなので、
+    # 述語の側に印を置いて断れるようにする。
+    knowledge: bool = False
     # 意味タグ。#移動 #感情 #疲労 のような粗い括り。
     #
     # これが返答の内容を決める。「疲れた」に #疲労 が付いていれば、
@@ -106,6 +113,7 @@ class FrameDict:
                         volitional=bool(raw.get("volitional", False)),
                         motion=bool(raw.get("motion", False)),
                         experiencer=bool(raw.get("experiencer", False)),
+                        knowledge=bool(raw.get("knowledge", False)),
                         tags=list(raw.get("tags") or []),
                     )
                 )

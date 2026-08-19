@@ -98,9 +98,15 @@ class Test含意が引ける:
         reasoning = ct.analyze("壊れました").reasoning
         assert len(reasoning.implications) <= 2
 
-    def test_タグが無ければ含意も無い(self, ct: CogniTag):
+    def test_内容のタグが無ければ内容の含意も無い(self, ct: CogniTag):
+        """「噛む」はフレームに無いので内容のタグは付かない。
+
+        素性由来の #過去 は付く（「噛んだ」の「だ」を過去として扱うため）。
+        内容について言えることが無い、という状態は保たれている。
+        """
         reasoning = ct.analyze("犬が男を噛んだ").reasoning
-        assert not reasoning.has_content
+        assert reasoning.tags == ["#過去"]
+        assert [i.tag for i in reasoning.implications] == ["#過去"]
 
 
 class Test解釈不能でもタグは取れる:

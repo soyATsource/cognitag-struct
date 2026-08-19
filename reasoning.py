@@ -165,12 +165,14 @@ def collect_tags(
                 add(modifier)
 
     # 2.5 名詞の種類。解析器が知っている区別をそのまま使う。
-    #     句辞書由来のトークンは form / content を持つのでそれも拾う。
+    #     カテゴリ辞書に載っている語は form / content を持つのでそれも拾う。
+    #     句として取れた語（河童の川流れ）と、形態素分割の後に見出し語で
+    #     引いた語（病院）の両方がここに来る。どちらも content を持つ。
     for token in tokens or []:
-        if token.is_phrase:
+        if token.is_phrase or token.content:
             for tag in token.tags():
                 add(tag)
-        elif token.pos == "名詞":
+        if token.pos == "名詞":
             add(NOUN_TAGS.get(token.subpos2, ""))
             add(NOUN_TAGS.get(token.subpos, ""))
 

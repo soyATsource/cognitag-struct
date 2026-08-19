@@ -30,6 +30,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .category_dict import CategoryDict, Entry
+from .compose import Composer, PatternSet
+from .inflect import Conjugator
 from .frames import FrameDict
 from .gap import GapReport, QuestionTemplates, detect
 from .generate import Style, Utterance, generate
@@ -53,6 +55,12 @@ QUESTIONS = "questions.toml"
 STYLE = "generation_style.toml"
 REASONING = "reasoning.toml"
 
+# 内容語の品詞。カバー率の分母になる。
+# 助詞・助動詞・記号は辞書に載る種類の語ではないので数えない。
+CONTENT_POS: frozenset[str] = frozenset({"名詞", "動詞", "形容詞", "形状詞", "副詞"})
+CONJUGATION = "conjugation.toml"
+PATTERNS = "patterns.jsonl"
+
 
 @dataclass
 class Analysis:
@@ -70,10 +78,46 @@ class Analysis:
     # 入力から取れたタグと、そこから言えること。
     # 構文解析に失敗してもモダリティ由来のタグは入る。
     reasoning: Reasoning | None = None
+    # 述語として説明できる見出し語。カバー率の判定に使う。
+    known_predicates: frozenset[str] = frozenset()
 
     @property
     def parsed(self) -> bool:
         return isinstance(self.ir, IR)
+
+    def content_words(self) -> list[Token]:
+        """内容語だけ。助詞・助動詞・記号は数えない。"""
+        return [t for t in self.tokens if t.pos in CONTENT_POS]
+
+    def unknown_words(self) -> list[str]:
+        """辞書に無かった内容語。
+
+        【黙れることを可視化する】
+        この方式の取り柄は「知らないことを知らないと言える」ことにある。
+        ところが今までは、知らない語も知っている語も同じ顔で通っていた。
+        既知として扱ったのか、何も付かなかっただけなのかが区別できないと、
+        「間違えない」という主張を確かめようがない。
+
+        既知とみなす根拠は 2 つだけ。カテゴリ辞書に載っているか、
+        述語のフレームがあるか。どちらも無ければ未知と申告する。
+        """
+        found: list[str] = []
+        for token in self.content_words():
+            if token.entry_id or token.content:
+                continue
+            if token.lemma in self.known_predicates:
+                continue
+            if token.lemma not in found:
+                found.append(token.lemma)
+        return found
+
+    @property
+    def coverage(self) -> float:
+        """内容語のうち、辞書で説明できた割合。内容語が無ければ 1.0。"""
+        words = self.content_words()
+        if not words:
+            return 1.0
+        return 1.0 - len(self.unknown_words()) / len(words)
 
     @property
     def needs_knowledge(self) -> bool:
@@ -90,9 +134,12 @@ class Analysis:
         clauses = len(self.ir.clauses) if self.parsed else 0
         state = "解析済" if self.parsed else "解釈不能"
         tags = self.reasoning.summary() if self.reasoning else "-"
+        unknown = self.unknown_words()
         return (
             f"{modality} / {state} / 節{clauses} / "
-            f"質問{len(self.questions())} / {tags}"
+            f"質問{len(self.questions())} / {tags} / "
+            f"被覆{self.coverage:.0%}"
+            + (f" 未知{unknown}" if unknown else "")
         )
 
 
@@ -114,6 +161,16 @@ class CogniTag:
         self.questions = QuestionTemplates.load(base / QUESTIONS)
         self.style = Style.load(base / STYLE)
         self.implications = ImplicationTable.load(base / REASONING)
+        # 返答を組み立てる側。活用表と文型。
+        # 固定文を並べるのではなく、単語と助詞の並びから作る。
+        self.conjugator = Conjugator.load(base / CONJUGATION)
+        # 関連語を引くために辞書とフレームも渡す。
+        # 「行く」の NI は場所、という宣言をフレームが持ち、
+        # その場所カテゴリの語をカテゴリ辞書が持っている。
+        self.composer = Composer(
+            PatternSet.load(base / PATTERNS), self.conjugator,
+            category_dict=self.category_dict, frames=self.frames,
+        )
 
     # -- 解析 -------------------------------------------------------------
 
@@ -128,6 +185,7 @@ class CogniTag:
             text=text,
             tokens=tokens,
             modality=detect_modality(tokens, text),
+            known_predicates=frozenset(self.frames.frames),
         )
         result.ir = parse(tokens, source_text=text, frames=self.frames)
         if isinstance(result.ir, IR):

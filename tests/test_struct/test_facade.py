@@ -22,7 +22,8 @@ def ct() -> CogniTag:
 
 class Test引数なしで使える:
     def test_パスを渡さず初期化できる(self, ct: CogniTag):
-        assert ct.phrase_count == 13
+        # 句の件数は直書きしない（カテゴリ辞書は育てる前提のデータ）
+        assert ct.phrase_count > 0
         assert ct.analyzer_available is True
 
     def test_同梱データの場所を持っている(self, ct: CogniTag):
@@ -36,16 +37,17 @@ class Test引数なしで使える:
         for name in (
             "axes.jsonl", "phrases.jsonl", "frames.jsonl",
             "questions.toml", "generation_style.toml", "reasoning.toml",
+            "conjugation.toml", "patterns.jsonl",
         ):
             shutil.copy(ct.data_dir / name, tmp_path / name)
 
         other = CogniTag(data_dir=tmp_path)
         assert other.data_dir == tmp_path
-        assert other.phrase_count == 13
+        assert other.phrase_count == ct.phrase_count
 
     def test_起動ログ用の要約が出る(self, ct: CogniTag):
         note = ct.describe()
-        assert "句13件" in note
+        assert f"句{ct.phrase_count}件" in note
         assert "Sudachi=有" in note
 
 

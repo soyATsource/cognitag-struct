@@ -46,15 +46,29 @@ class Test句の照合:
         assert "が" in surfaces(tokens)
 
     def test_句と形態素が混在する(self, tokenizer: Tokenizer):
+        tokens = tokenizer.tokenize("豚に真珠だと言われた")
+
+        assert tokens[0].surface == "豚に真珠"
+        assert tokens[0].is_phrase is True
+        assert tokens[0].form == "ことわざ"
+
+        assert "言う" in [t.lemma for t in tokens]
+
+    def test_1形態素の語は句照合に載せない(self, tokenizer: Tokenizer):
+        """「東京ディズニーランド」は Sudachi が 1 形態素で返す。
+
+        句照合に載せると「会社」が「会社員」の途中で切れるのと同じ事故が
+        起きるので、載せない。カテゴリの情報は形態素分割の後に付ける。
+        """
         tokens = tokenizer.tokenize("東京ディズニーランドに行きます")
 
         assert tokens[0].surface == "東京ディズニーランド"
-        assert tokens[0].is_phrase is True
-        assert tokens[0].form == "固有名詞"
+        assert tokens[0].is_phrase is False      # 句としては取っていない
+        assert tokens[0].form == "固有名詞"       # カテゴリの情報は付いている
+        assert tokens[0].entry_id == "tdl_1"
 
         assert tokens[1].surface == "に"
         assert tokens[1].pos == "助詞"
-        assert tokens[1].is_phrase is False
 
         assert tokens[2].lemma == "行く"
         assert tokens[2].has(POLITE)

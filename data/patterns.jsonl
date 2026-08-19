@@ -1,0 +1,63 @@
+# 返答の文型。1 行 1 型。
+#
+# 【固定文を置かない】
+# ここに書くのは「単語」「助詞」「単語」の並びであって、文そのものではない。
+# 単語は相手の発話から取り、述語は活用させて埋める。
+# したがって同じ型でも、入力が変われば別の文になる。
+#
+# 【elements の書き方】
+#     大文字の役割名  そこに単語を入れる。GA WO NI HE KARA MADE TOPIC
+#     PRED            述語。spec に従って活用させる
+#     それ以外        助詞などの文字列。そのまま置く
+#
+# 【need】
+# その役割が埋まっていないと、この型は使えない。
+# 埋められない型は候補から外れる。無理に作らない。
+#
+# 【spec】
+# 述語をどう活用させるか。polite / negative / past / mood / final。
+# past を書かなければ入力の時制をそのまま引き継ぐ。
+#     mood: plain 言い切り / question 問い / confirm 確認
+#           volitional 意志 / suppose 推量
+#
+# 【追加のしかた】
+# 行を 1 本足すと、条件を満たす全入力に効く。語を足すのとは違い、
+# 組み合わせで増えるのはこの部分である。
+
+# --- 確認する ---------------------------------------------------------
+{"id": "confirm_wo", "need": ["WO"], "elements": ["WO", "を", "PRED"], "spec": {"mood": "confirm"}}
+{"id": "confirm_ga", "need": ["GA"], "elements": ["GA", "が", "PRED"], "spec": {"mood": "confirm"}}
+{"id": "confirm_ni", "need": ["NI"], "elements": ["NI", "に", "PRED"], "spec": {"mood": "confirm"}}
+{"id": "confirm_ga_wo", "need": ["GA", "WO"], "elements": ["GA", "が", "WO", "を", "PRED"], "spec": {"mood": "confirm"}}
+{"id": "confirm_bare", "need": [], "elements": ["PRED"], "spec": {"mood": "confirm"}}
+{"id": "ask_bare", "need": [], "elements": ["PRED"], "spec": {"mood": "question"}}
+{"id": "suppose_bare", "need": [], "elements": ["PRED"], "spec": {"mood": "suppose"}}
+
+# --- 問い返す ---------------------------------------------------------
+{"id": "ask_wo", "need": ["WO"], "elements": ["WO", "を", "PRED"], "spec": {"mood": "question"}}
+{"id": "ask_ni", "need": ["NI"], "elements": ["NI", "に", "PRED"], "spec": {"mood": "question"}}
+{"id": "ask_topic", "need": ["TOPIC"], "elements": ["TOPIC", "は", "PRED"], "spec": {"mood": "question"}}
+{"id": "ask_polite", "need": ["WO"], "elements": ["WO", "を", "PRED"], "spec": {"mood": "question", "polite": true}}
+
+# --- 時制を動かす -----------------------------------------------------
+{"id": "shift_future", "need": ["WO"], "elements": ["これから", "WO", "を", "PRED"], "spec": {"mood": "question", "past": false}}
+{"id": "shift_past_done", "need": ["WO"], "elements": ["もう", "WO", "を", "PRED"], "spec": {"mood": "confirm", "past": true}}
+
+# --- 極性を反転する ---------------------------------------------------
+{"id": "flip_negative", "need": ["GA"], "elements": ["GA", "が", "PRED"], "spec": {"mood": "question", "negative": true}}
+{"id": "flip_positive", "need": ["WO"], "elements": ["WO", "を", "PRED"], "spec": {"mood": "suppose", "negative": false}}
+
+# --- 誘う・促す -------------------------------------------------------
+{"id": "invite_wo", "need": ["WO"], "elements": ["WO", "を", "PRED"], "spec": {"mood": "volitional"}}
+{"id": "invite_ni", "need": ["NI"], "elements": ["NI", "に", "PRED"], "spec": {"mood": "volitional"}}
+
+# --- 辞書から引いた語を置く -------------------------------------------
+#
+# CAND は空いている格に置く語。どのカテゴリから引くかは
+# frames.jsonl の content_constraints が決める。
+# suggest_slot でどの格として置くかを指定する。
+{"id": "suggest_ni", "need": [], "suggest_slot": "NI", "elements": ["CAND", "CAND_P", "PRED"], "spec": {"mood": "question"}, "note": "行きます → 駅に行くのか"}
+{"id": "suggest_wo", "need": [], "suggest_slot": "WO", "elements": ["CAND", "CAND_P", "PRED"], "spec": {"mood": "question"}, "note": "作ります → 資料を作るのか"}
+{"id": "suggest_ni_confirm", "need": [], "suggest_slot": "NI", "elements": ["CAND", "CAND_P", "PRED"], "spec": {"mood": "confirm"}}
+{"id": "suggest_ga", "need": [], "suggest_slot": "GA", "elements": ["CAND", "CAND_P", "PRED"], "spec": {"mood": "question"}}
+{"id": "suggest_ni_invite", "need": [], "suggest_slot": "NI", "elements": ["CAND", "CAND_P", "PRED"], "spec": {"mood": "volitional"}}

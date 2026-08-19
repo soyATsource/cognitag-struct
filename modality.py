@@ -92,6 +92,8 @@ INTERROGATIVE_LEMMAS: frozenset[str] = frozenset(
     {
         "どこ", "誰", "だれ", "何", "なに", "いつ", "どちら", "どれ",
         "どの", "どんな", "いくつ", "いくら", "なぜ", "どう", "どうして",
+        # 話し言葉の形。「なんで」「なん」「どっち」「だれ」。
+        "なんで", "なん", "どっち", "どこら", "いつごろ",
     }
 )
 
@@ -100,9 +102,21 @@ FINAL_QUESTION = "か"
 FINAL_AGREEMENT = "ね"
 FINAL_INFORMING = "よ"
 FINAL_SOFTENER = "な"
+FINAL_EXPLANATORY = "の"
 
 FINAL_PARTICLE_SUBPOS = "終助詞"
 QUESTION_MARKS = ("?", "？")
+
+# 「教えて」「手伝って」の依頼を見るための手がかり。
+CONJUNCTIVE_PARTICLE = "接続助詞"
+TE_SURFACES: frozenset[str] = frozenset({"て", "で"})
+
+# 「何時」「何人」「何回」のように、疑問詞が名詞に取り込まれる形。
+#
+# Sudachi は「何人です」を 1 語の名詞（見出し語 何人）として返すので、
+# 見出し語の一致では疑問詞「何」が見えない。結果として
+# 「東京の人口は何人ですか」が肯否の問いと判定されていた。
+INTERROGATIVE_PREFIX = "何"
 
 
 @dataclass
@@ -149,6 +163,31 @@ def _is_request(tokens: list[Token]) -> str | None:
             return f"命令形: {token.surface}"
         if token.lemma in REQUEST_LEMMAS:
             return f"依頼の語: {token.surface}"
+    return _is_te_request(tokens)
+
+
+def _is_te_request(tokens: list[Token]) -> str | None:
+    """「教えて」「手伝って」のように接続助詞「て」で言い切る依頼。
+
+    日本語の依頼で最も普通の形だが、命令形でも依頼の語でもないので
+    上の判定に掛からず、平叙文として扱われていた。
+
+    見るのは文末だけにする。
+        教えて          → 末尾が接続助詞「て」。依頼
+        教えています     → 「て」の後に用言が続く。依頼ではない
+        走って帰る       → 同上。連用の「て」
+    「ね」「よ」が付く場合（教えてね）があるので終助詞は除いて見る。
+    """
+    body = [t for t in tokens if t.subpos != FINAL_PARTICLE_SUBPOS]
+    if len(body) < 2:
+        return None
+    last, previous = body[-1], body[-2]
+    if (
+        last.subpos == CONJUNCTIVE_PARTICLE
+        and last.surface in TE_SURFACES
+        and previous.pos == "動詞"
+    ):
+        return f"て形の依頼: {previous.surface}{last.surface}"
     return None
 
 
@@ -208,7 +247,15 @@ def _is_speculation(tokens: list[Token], finals: list[Token]) -> str | None:
 
 
 def _interrogatives(tokens: list[Token]) -> list[Token]:
-    return [t for t in tokens if t.lemma in INTERROGATIVE_LEMMAS]
+    return [
+        t for t in tokens
+        if t.lemma in INTERROGATIVE_LEMMAS
+        or (
+            t.pos == "名詞"
+            and len(t.lemma) > 1
+            and t.lemma.startswith(INTERROGATIVE_PREFIX)
+        )
+    ]
 
 
 def _is_question(tokens: list[Token], finals: list[Token], text: str) -> str | None:
@@ -216,6 +263,17 @@ def _is_question(tokens: list[Token], finals: list[Token], text: str) -> str | N
         return "終助詞: か"
     if _has_question_mark(text):
         return "疑問符"
+    # 終助詞「の」で終わる形。「なんでそうなるの」「何時までやるの」。
+    #
+    # 「の」には説明の平叙（「行くの」＝行くのだ）もあるが、話し言葉では
+    # 問いの方が多い。疑問詞が同席していればほぼ問いなので、
+    # 疑問詞がある場合に限って問いとみなす。
+    #     なんでそうなるの → 問い（疑問詞あり）
+    #     もう帰るの       → 問いとみなさない（疑問詞なし。断定もありうる）
+    if any(t.surface == FINAL_EXPLANATORY for t in finals) and _interrogatives(
+        tokens
+    ):
+        return "終助詞: の + 疑問詞"
     return None
 
 
@@ -249,7 +307,10 @@ def detect_modality(tokens: list[Token], text: str = "") -> ModalityResult:
     result = ModalityResult(
         modality=Modality.STATEMENT,
         attitude=_attitude(finals),
-        interrogatives=[t.surface for t in interrogatives],
+        # 表層形ではなく見出し語を持つ。「どうですか」の表層形は
+        # 「どうです」で、そのまま返答に埋めると「どうですを知る必要がある」
+        # という壊れた文になる。
+        interrogatives=[t.lemma for t in interrogatives],
         negative=NEGATIVE in predicate_features,
         past=PAST in predicate_features,
         polite=POLITE in predicate_features,

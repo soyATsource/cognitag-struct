@@ -66,10 +66,14 @@ class Test軸の交差:
         assert all(e.form == "固有名詞" for e in by_form)
 
         by_content = category_dict.members(content="幸運")
-        assert [e.id for e in by_content] == ["inumo_2"]
+        assert "inumo_2" in [e.id for e in by_content]
+        assert all(e.content == ["幸運"] for e in by_content)
 
     def test_両方省略すると全件(self, category_dict: CategoryDict):
-        assert len(category_dict.members()) == len(category_dict) == 13
+        # 件数は直書きしない。カテゴリ辞書は育てる前提のデータなので、
+        # 語を足すたびにテストが落ちるのは検証として役に立たない。
+        assert len(category_dict.members()) == len(category_dict)
+        assert len(category_dict) > 0
 
     def test_該当なしは空リスト(self, category_dict: CategoryDict):
         # 固有名詞に content を付けていないので交差は空になる
@@ -183,8 +187,15 @@ class Testfacetに依存しない:
         """facet は注釈で埋まる。このモジュールは値を一切見ない。
 
         キーが 4 軸揃っていることと、値が 0.0-1.0 の範囲にあることだけを検査する。
+
+        空の facet は許す。カテゴリ辞書に後から足した語はまだ注釈が無く、
+        埋まるまでの間も辞書として使えなければならない。適当な値を
+        入れて 4 軸を揃えるのは、注釈していないものを注釈済みに見せる
+        ことになるのでしない。select() は欠けた軸を既定値で扱う。
         """
         for entry in category_dict.members():
+            if not entry.facet:
+                continue
             assert set(entry.facet) == {
                 "physical",
                 "psychological",

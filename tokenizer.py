@@ -35,7 +35,9 @@ dictionary_form() をそのまま使えばこの区別が得られる。追加�
 
 from __future__ import annotations
 
-from .category_dict import CategoryDict
+import re
+
+from .category_dict import CategoryDict, Entry
 from .ir import DEFAULT_FORM, NEGATIVE, PAST, POLITE, Token
 from .phrase_dict import PhraseDict
 
@@ -59,6 +61,9 @@ AUXILIARY_FEATURES: dict[str, str] = {
 
 AUXILIARY_POS = "助動詞"
 
+# 断定の「だ」。撥音便のあとでは過去の助動詞として働く（下の説明を参照）。
+COPULA_LEMMA = "だ"
+
 # 機能素を付けずに述語へ畳むだけの助動詞。
 #
 # 「悩んでる」は 悩ん(動詞) + でる(助動詞) に割れる。畳まないと表層形が
@@ -68,6 +73,43 @@ AUXILIARY_POS = "助動詞"
 # POLITE / NEGATIVE / PAST の 3 つに限る決まりなので素性は付けない。
 # 表層形と span を正しく保つためだけに畳む。
 SURFACE_ONLY_LEMMAS: frozenset[str] = frozenset({"でる", "てる", "いる"})
+
+# --- 入力の正規化 ---------------------------------------------------------
+#
+# 会話で打たれる文字列は、辞書に載っている形からずれる。
+#
+#     こんばんはー   末尾を伸ばす      → こんばん + はー に割れて壊れる
+#     ｗｗｗ         全角・繰り返し     → 別の語として扱われる
+#     。。。         記号の連打
+#
+# 元の綴りを保つ方針もあるが、ずれた形を全部辞書に載せるのは
+# 際限がない。伸ばし棒と繰り返しだけを畳んで、辞書の側を小さく保つ。
+# 畳むのは「意味を変えない揺れ」に限る。
+
+# 3 文字以上の繰り返しは 1 文字に畳む。「あああ」「かかか」
+_REPEATED = re.compile(r"(.)\1{2,}")
+# 記号と w は 2 つでも畳む。「ｗｗ」「!!」「。。」
+#
+# 仮名を 2 つで畳むと「ええ」「いい」が壊れるので、対象を絞る。
+# w だけ特別扱いなのは、笑いの表記として単独で意味を持つため。
+_REPEATED_PAIR = re.compile(r"([wW!?。、！？…])\1+")
+# 末尾の伸ばし棒。「こんばんはー」「ありがとー」
+_TRAILING_LONG = re.compile(r"[ー〜~]+(?=[。、！？!?\s]*$)")
+# 全角の英数字と記号を半角へ。ｗ → w
+#
+# str.translate は文字ではなくコードポイントを鍵に取る。
+# 鍵を文字にすると黙って何も起きない（変換されないことに気づけない）。
+_WIDE = {0xFF01 + i: chr(0x21 + i) for i in range(94)}
+
+
+def normalize(text: str) -> str:
+    """表記の揺れを畳む。意味は変えない。"""
+    if not text:
+        return text
+    text = text.translate(_WIDE)
+    text = _REPEATED.sub(r"\1", text)
+    text = _REPEATED_PAIR.sub(r"\1", text)
+    return _TRAILING_LONG.sub("", text)
 
 # 活用形がこれで始まる助動詞は吸収しない。
 #
@@ -122,6 +164,24 @@ class Tokenizer:
         except Exception:
             self._sudachi = None
 
+        # 1 形態素で済む語は句照合に載せない（下の説明を参照）。
+        # 表層形と見出し語の両方を鍵にする。「家」のように活用しない語では
+        # 同じだが、辞書側が lemma を別に持つ場合に引けるようにしておく。
+        # 見出し語で引く表は全エントリを入れる。複数形態素の語でも、
+        # サ変の畳み込みで 1 トークンになることがあるため
+        # （「応援してます」の見出し語は「応援する」）。
+        # 句として取れた語には付け直さないので二重にはならない。
+        self._words: dict[str, Entry] = {}
+        # 句照合から外す語。1 形態素で済むものだけ。
+        self._single: set[str] = set()
+        for entry in category_dict.entries.values():
+            self._words.setdefault(entry.surface, entry)
+            self._words.setdefault(entry.lemma, entry)
+            if self._sudachi is not None and len(
+                self._sudachi.tokenize(entry.surface, self._split_mode)
+            ) == 1:
+                self._single.add(entry.surface)
+
     @property
     def available(self) -> bool:
         return self._sudachi is not None
@@ -129,13 +189,30 @@ class Tokenizer:
     # -- 本体 -------------------------------------------------------------
 
     def tokenize(self, text: str) -> list[Token]:
-        """句を先に確定させ、残りを形態素分割する。"""
+        """句を先に確定させ、残りを形態素分割する。
+
+        【1 形態素の語は句照合に載せない】
+        句照合は境界を見ない最長一致なので、「会社」を句として登録すると
+        「会社員です」が 会社 + 員です に割れて壊れる。「病院食」「駅前」も同様。
+
+        処理順序（句照合が先）を守る理由は「割ってから再結合すると候補が
+        組み合わせで増える」ことであり、これは複数形態素の句にだけ当てはまる。
+        1 形態素の語には再結合の問題が無いので、形態素分割の後に
+        見出し語で引けばよい。順序の原則はそのままに、適用範囲を分けている。
+        """
         if not text:
             return []
+        text = normalize(text)
 
         tokens: list[Token] = []
         cursor = 0
         for match in self.phrase_dict.find_all(text):
+            # 1 形態素の語は句として取らない。飛ばせば、この区間は
+            # 次の _morphemes がまとめて処理する。
+            if match.surface in self._single:
+                continue
+            if match.start < cursor:
+                continue
             if match.start > cursor:
                 tokens.extend(self._morphemes(text, cursor, match.start))
             tokens.append(self._phrase_token(match))
@@ -143,7 +220,63 @@ class Tokenizer:
 
         if cursor < len(text):
             tokens.extend(self._morphemes(text, cursor, len(text)))
+
+        self._attach_categories(tokens)
         return tokens
+
+    def _attach_categories(self, tokens: list[Token]) -> None:
+        """形態素分割の結果に、カテゴリ辞書の form / content を付ける。
+
+        句として取ったトークンには既に付いているので触らない。
+        引くのは見出し語を優先する。「家に帰った」の「帰っ」のような
+        活用形でも、見出し語なら辞書と一致するため。
+        """
+        for token in tokens:
+            if token.is_phrase or not self._words:
+                continue
+            entry = self._words.get(token.lemma) or self._words.get(token.surface)
+            if entry is None:
+                composed = self._compose_content(token)
+                if composed:
+                    token.content = composed
+                continue
+            token.form = entry.form
+            token.content = list(entry.content)
+            token.entry_id = entry.id
+
+    def _compose_content(self, token: Token) -> list[str]:
+        """複合語を構成要素から判定する。できなければ空。
+
+        【なぜ列挙で追いつかないか】
+        日本語の複合は生産的なので、「病院食」「会議室」「通勤時間」を
+        すべて辞書に載せることはできない。作られ続けるものを列挙で
+        追うのは原理的に無理がある。
+
+        【頭ではなく末尾を見る】
+        日本語の複合名詞は末尾が主要部で、そこが種類を決める。
+        「病院食」は食べ物であって病院ではない。「会議室」は部屋である。
+        したがって末尾の構成要素が辞書にあれば、その分類を受け継ぐ。
+
+        【失敗したら黙る】
+        末尾が辞書に無ければ何も付けない。推測で分類すると、
+        知らないものを知っている顔で扱うことになる。この方式の取り柄は
+        知らないと言えることなので、そこを崩さない。
+
+        entry_id は付けない。合成で得た分類は、辞書に登録された語と
+        同じ確度ではないためで、未知語としての申告は残す。
+        """
+        if self._sudachi is None or token.pos != "名詞" or len(token.surface) < 2:
+            return []
+        try:
+            from sudachipy import SplitMode
+
+            parts = self._sudachi.tokenize(token.surface, SplitMode.A)
+        except Exception:  # noqa: BLE001
+            return []
+        if len(parts) < 2:
+            return []
+        head = self._words.get(parts[-1].dictionary_form())
+        return list(head.content) if head is not None else []
 
     def _phrase_token(self, match) -> Token:
         """句を 1 トークンにする。
@@ -198,6 +331,7 @@ class Tokenizer:
             pos = pos_tuple[0]
             subpos = pos_tuple[1] if len(pos_tuple) > 1 else ""
             subpos2 = pos_tuple[2] if len(pos_tuple) > 2 else ""
+            conjugation = pos_tuple[4] if len(pos_tuple) > 4 else ""
             inflection = pos_tuple[5] if len(pos_tuple) > 5 else ""
             begin = start + morpheme.begin()
             finish = start + morpheme.end()
@@ -211,6 +345,7 @@ class Tokenizer:
                 noun.pos = pos
                 noun.subpos = subpos
                 noun.subpos2 = subpos2
+                noun.conjugation = conjugation
                 noun.inflection = inflection
                 noun.span = (noun.span[0], finish)
                 # ます / た などの助動詞はこの後ろに来るので、
@@ -234,6 +369,25 @@ class Tokenizer:
                 continue
 
             feature = AUXILIARY_FEATURES.get(lemma) if pos == AUXILIARY_POS else None
+            # 撥音便・促音便の「だ」。「噛んだ」「止んだ」「読んだ」。
+            #
+            # この「だ」の見出し語は「た」ではなく「だ」で、
+            # 「これは本だ」のコピュラと同じ見出し語・同じ活用形になる。
+            # 見出し語だけで判定すると両者を取り違えるので、直前が
+            # 動詞かどうかで分ける。動詞に続く「だ」は過去の助動詞であり、
+            # 名詞に続く「だ」は断定である。
+            # 表層形が「だ」ちょうどのものに限る。「だろう」も見出し語は
+            # 「だ」だが、あれは推量であって過去ではない。吸収すると
+            # 「雨が降るだろう」から推量の手がかりが消える。
+            if (
+                feature is None
+                and pos == AUXILIARY_POS
+                and lemma == COPULA_LEMMA
+                and surface == COPULA_LEMMA
+                and tokens
+                and tokens[-1].pos == "動詞"
+            ):
+                feature = PAST
             # 仮定形は吸収しない（条件を素性に潰さないため。上の説明を参照）
             if inflection.startswith(CONDITIONAL_INFLECTION_PREFIX):
                 feature = None
@@ -253,6 +407,7 @@ class Tokenizer:
                     pos=pos,
                     subpos=subpos,
                     subpos2=subpos2,
+                    conjugation=conjugation,
                     inflection=inflection,
                     # 句辞書に無い語の既定値。既存 CogniTag 辞書の
                     # カテゴリとの対応付けは次の段階で行う。
