@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="470" viewBox="0 0 680 470" role="img">
+<title>カテゴリ辞書を増やす 3 つの経路</title>
+<desc>語の列挙、文生成からの格抽出、V2 辞書からの多数決という 3 経路が、共通の検査と検収と追記を経て phrases.jsonl に入るまでの図</desc>
+<style>
+  .th{font-family:system-ui,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif;font-size:14px;font-weight:500;fill:#1a1a1a}
+  .ts{font-family:system-ui,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif;font-size:12px;fill:#6b6b6b}
+  .box{fill:#f5f4f2;stroke:#d4d2ce;stroke-width:.5}
+  .purple{fill:#f0ecf9;stroke:#7a5cc0;stroke-width:.5}
+  .blue{fill:#e8eefb;stroke:#4a6fc0;stroke-width:.5}
+  .amber{fill:#fdf2e0;stroke:#c8892a;stroke-width:.5}
+  .teal{fill:#e6f2f0;stroke:#3f8f80;stroke-width:.5}
+  .arr{stroke:#8a8782;stroke-width:1.5;fill:none}
+  @media (prefers-color-scheme:dark){
+    .th{fill:#e8e6e3}.ts{fill:#a3a3a3}
+    .box{fill:#2a2a2a;stroke:#454545}
+    .purple{fill:#241d38;stroke:#9b7fd4}
+    .blue{fill:#1a2440;stroke:#6b8fd4}
+    .amber{fill:#3a2d15;stroke:#c8892a}
+    .teal{fill:#17342f;stroke:#4fa392}
+  }
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#8a8782" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect class="purple" x="40" y="40" width="190" height="76" rx="4"/>
+<text class="th" x="56" y="64">list</text><text class="ts" x="56" y="83">語を列挙させる</text><text class="ts" x="56" y="100">gemma3:4b・10 語で頭打ち</text>
+
+<rect class="purple" x="245" y="40" width="190" height="76" rx="4"/>
+<text class="th" x="261" y="64">sentence</text><text class="ts" x="261" y="83">文を書かせ格から抜く</text><text class="ts" x="261" y="100">gemma3:4b・日常語向け</text>
+
+<rect class="blue" x="450" y="40" width="190" height="76" rx="4"/>
+<text class="th" x="466" y="64">dictionary</text><text class="ts" x="466" y="83">V2 辞書を多数決で読替え</text><text class="ts" x="466" y="100">LLM 不要・専門用語向け</text>
+
+<line class="arr" x1="135" y1="116" x2="300" y2="146" marker-end="url(#arrow)"/>
+<line class="arr" x1="340" y1="116" x2="340" y2="146" marker-end="url(#arrow)"/>
+<line class="arr" x1="545" y1="116" x2="380" y2="146" marker-end="url(#arrow)"/>
+
+<rect class="box" x="180" y="150" width="320" height="60" rx="4"/>
+<text class="th" x="200" y="174">機械の検査</text><text class="ts" x="200" y="193">名詞か・1 語か・品詞から取れないか</text>
+<line class="arr" x1="340" y1="210" x2="340" y2="238" marker-end="url(#arrow)"/>
+
+<rect class="amber" x="180" y="242" width="320" height="60" rx="4"/>
+<text class="th" x="200" y="266">人の検収</text><text class="ts" x="200" y="285">TSV を見て誤りを消す。省略できない</text>
+<line class="arr" x1="340" y1="302" x2="340" y2="330" marker-end="url(#arrow)"/>
+
+<rect class="box" x="180" y="334" width="320" height="60" rx="4"/>
+<text class="th" x="200" y="358">追記</text><text class="ts" x="200" y="377">id と語の重複、未定義の値を弾く</text>
+<line class="arr" x1="340" y1="394" x2="340" y2="416" marker-end="url(#arrow)"/>
+
+<rect class="teal" x="180" y="420" width="320" height="36" rx="4"/>
+<text class="th" x="200" y="443">phrases.jsonl（282 件）</text>
+</svg>

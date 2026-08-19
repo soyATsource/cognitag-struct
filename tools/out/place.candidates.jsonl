@@ -1,0 +1,10 @@
+{"id": "place_001", "surface": "職場", "lemma": "職場", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_002", "surface": "病院", "lemma": "病院", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_003", "surface": "公園", "lemma": "公園", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_004", "surface": "駅", "lemma": "駅", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_005", "surface": "カフェ", "lemma": "カフェ", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_006", "surface": "学校", "lemma": "学校", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_007", "surface": "商店街", "lemma": "商店街", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_008", "surface": "図書館", "lemma": "図書館", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_009", "surface": "家", "lemma": "家", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
+{"id": "place_010", "surface": "ホテル", "lemma": "ホテル", "pos": "名詞", "form": "一般語", "content": ["場所"], "presupposition": [], "facet": {}, "note": "gemma3:4b 生成 / 3/3 一致"}
