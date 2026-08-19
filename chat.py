@@ -39,11 +39,13 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from cognitag_struct.capability import Registry  # noqa: E402
-from cognitag_struct.context import Context  # noqa: E402
+from cognitag_struct.context import ME, YOU, Context  # noqa: E402
 from cognitag_struct.facade import Analysis, CogniTag  # noqa: E402
-from cognitag_struct.ir import IR, POLITE, Clause  # noqa: E402
+from cognitag_struct.inflect import QUESTION, Spec  # noqa: E402
+from cognitag_struct.ir import IR, PAST, POLITE, Clause  # noqa: E402
 from cognitag_struct.modality import Modality  # noqa: E402
 from cognitag_struct.reasoning import MODALITY_TAGS  # noqa: E402
+from cognitag_struct.selfdesc import asked_about_self  # noqa: E402
 
 # 応答の型が data に無かった場合の最終手段。
 # 通常は generation_style.toml の [reply] が使われる。
@@ -66,6 +68,21 @@ OBSERVABLE_TAGS: frozenset[str] = frozenset({"#自然", "#時間", "#数量", "#
 
 # 内容について何も言っていないタグ。素性と文型だけのもの。
 # これしか無いときは、含意を並べるより構造から言う方が中身が出る。
+# 問い返した、と言える方針。文脈に「次の入力は答えかもしれない」と
+# 記録するかどうかがこれで決まる。
+PROBE_POLICIES: frozenset[str] = frozenset(
+    {"statement_gap", "with_reasoning_gap", "ack_gap"}
+)
+
+# 「さっき」「今の」など、直前の発話を指す語。
+RECALL_MARKERS: frozenset[str] = frozenset({"さっき", "今", "先ほど", "前"})
+# 「言う」系の述語。上と揃って初めて「何と言ったか」の問いになる。
+SAY_LEMMAS: frozenset[str] = frozenset({"言う", "話す", "喋る"})
+
+# 原因を尋ねない話題。「何が疲れたの？」「何が眠いの？」は問いとして
+# 成立しない。理由を聞くより、受け止めて終える方が会話として自然になる。
+NO_CAUSE_TAGS: frozenset[str] = frozenset({"#疲労", "#感覚"})
+
 WEAK_TAGS: frozenset[str] = frozenset(
     {"#過去", "#否定", "#質問", "#仮定", "#不確定", "#意志"}
 )
@@ -169,9 +186,13 @@ class Responder:
             t.pos == SYMBOL_POS for t in analysis.tokens
         ):
             return Reply(self._template("empty"), policy="empty")
+        # 発話を先に記録する。返答を決める側から「さっき言ったこと」を
+        # 引けるようにするため、判断より前に入れる。
+        self.context.record(YOU, text)
         reply = self._decide(analysis)
         self._add_idiom(analysis, reply)
         self._remember(analysis, reply)
+        self.context.record(ME, reply.text)
         return reply
 
     def _add_idiom(self, analysis: Analysis, reply: Reply) -> None:
@@ -226,6 +247,15 @@ class Responder:
         if answered is not None:
             return answered
 
+        # -0.5 直前の発話について聞かれた場合。
+        #
+        # 構造からは復元できない。IR は意味の骨格であって、言われた文
+        # そのものではないためで、生成し直すと言い直しになる。
+        # 記録しておいた文をそのまま返す。
+        recalled = self._recall(analysis, trace)
+        if recalled is not None:
+            return recalled
+
         # 0. 会話の口。「草」「なるほど」「おつ」。
         #
         # 構造の解析より先に見る。この手の発話は述語を持たないので
@@ -265,6 +295,30 @@ class Responder:
                 )
                 return Reply(result.text, policy=f"external:{name}", trace=trace)
 
+        # 0.9 自分について聞かれた場合。
+        #
+        # 世界のことは知らないが、自分が何であるかは知っている。
+        # 「答えられない」と返す前にここを見る。持っていない項目なら
+        # 通り抜けて、いつもどおり答えられないと返す。
+        kind = asked_about_self(analysis, self.ct.frames)
+        if kind is not None:
+            answer = self.ct.selfdesc.answer(kind, tags)
+            if answer:
+                trace.append(f"自己記述: {kind} について答えた")
+                return Reply(answer, policy=f"self:{kind}", trace=trace)
+
+        # 0.95 答えを用意してある事実。
+        #
+        # 百科事典は持たないが、何度も聞かれるものだけ表にしてある。
+        # 表に無ければ通り抜けて、いつもどおり分からないと返す。
+        fact = self.ct.facts.find(analysis)
+        if fact is not None:
+            trace.append(
+                f"事実: {fact.id}"
+                + (f" / 出どころ {fact.source}" if fact.source else "")
+            )
+            return Reply(fact.answer, policy=f"fact:{fact.id}", trace=trace)
+
         # 1. 知識を要する問い。答えられないと返す。
         if modality is Modality.Q_OPEN:
             words = "・".join(analysis.modality.interrogatives) or "それ"
@@ -294,11 +348,21 @@ class Responder:
             (Modality.VOLITION, "volition"),
         ):
             if modality is target:
+                # 受領・受け止めの一句に、足りないことの問い返しを足す。
+                # 説明（含意）は付けない。「そうしたいのだな。移動の話だな。
+                # 行き先と時刻で決まるなら…」は望まれていた形ではなかった。
+                base = self._template(key)
+                suggest = (
+                    analysis.reasoning.suggestion() if analysis.reasoning else ""
+                )
+                question = suggest or self._probe(analysis)
                 own = MODALITY_TAGS.get(target, "")
                 extra = self._reasoning_text(analysis, skip=(own,))
-                base = self._template(key)
+                if extra:
+                    trace.append(f"含意（返答には出さない）: {extra}")
                 return Reply(
-                    f"{base}{extra}" if extra else base, policy=key, trace=trace
+                    base + question if question else base,
+                    policy=key, trace=trace,
                 )
 
         # 素性や文型だけのタグは、内容について何も言っていない。
@@ -325,21 +389,35 @@ class Responder:
             else:
                 self._used_implications.update(fresh)
 
-        # 4. 平叙。構造が取れなくても、タグが取れていれば返せる。
-        #    「構造として取れなかった」で突き放すのは最後の手段にする。
+        # 4. 平叙。受け止めの一句と、足りないことの問い返しで返す。
+        #
+        # 【説明を返さない】
+        # 以前は含意（「移動の話だな。行き先と時刻で決まるなら…」）を
+        # 返していたが、望まれていたのは説明ではなく受け止めと問い返し
+        # だった。含意は :trace に残し、返答には出さない。
         questions = analysis.questions()
-        if reasoning:
+        ack = analysis.reasoning.acknowledgement() if analysis.reasoning else ""
+        if ack or questions:
             if questions and modality not in self.NO_PROBE:
-                return Reply(
-                    self._template("with_reasoning_gap").format(
-                        reasoning=reasoning, question=questions[0]
-                    ),
-                    policy="with_reasoning_gap", trace=trace,
+                text = (ack + questions[0]) if ack else questions[0]
+                key = "ack_gap"
+            else:
+                # 受け止めのあとに何を続けるか。提案 > さらに尋ねる の順。
+                #
+                # 「疲れた」に「何が疲れたの？」と聞き返すより
+                # 「今日はもう休もう」と勧める方が会話として自然だった。
+                # 提案は踏み込む行為なので、持っているタグは少なくてよい。
+                suggest = (
+                    analysis.reasoning.suggestion() if analysis.reasoning else ""
                 )
-            return Reply(
-                self._template("with_reasoning").format(reasoning=reasoning),
-                policy="with_reasoning", trace=trace,
-            )
+                further = suggest or self._specify(analysis)
+                text = ack + further
+                key = ("ack_suggest" if suggest
+                       else "ack_specify" if further else "ack")
+            if text:
+                if reasoning:
+                    trace.append(f"含意（返答には出さない）: {reasoning}")
+                return Reply(text, policy=key, trace=trace)
 
         # 4.5 構造が取れない断片。突き放す前に 2 つ試す。
         if not analysis.parsed:
@@ -365,6 +443,19 @@ class Responder:
                 return Reply(
                     self._template("q_open").format(interrogative=words),
                     policy="q_open", trace=trace,
+                )
+
+            # 名詞だけの断片。突き放す前に、その語について尋ねる。
+            # 「名古屋」に「どうした？」と返すより、拾った語を使う方が
+            # 会話が続く。何の話かは分からないままなので、判断はしない。
+            noun = next(
+                (t for t in analysis.tokens if t.pos == "名詞"), None
+            )
+            if noun is not None:
+                trace.append(f"断片: 名詞「{noun.surface}」について尋ねる")
+                return Reply(
+                    self._template("about_noun").format(noun=noun.surface),
+                    policy="about_noun", trace=trace,
                 )
 
             return Reply(
@@ -431,6 +522,86 @@ class Responder:
         )
         return Reply(chosen.text, policy=f"pattern:{chosen.pattern_id}",
                      trace=trace)
+
+    def _recall(self, analysis: Analysis, trace: list[str]) -> Reply | None:
+        """「さっき何て言った」に答える。該当しなければ None。
+
+        誰の発話を聞かれているかで返すものが変わる。
+            さっき何て言った        こちらの直前の発話
+            さっき何て言ったっけ     同上（自分の発言を確かめる場合もある）
+
+        覚えていなければ「覚えていない」と言う。作り直さない。
+        """
+        lemmas = {t.lemma for t in analysis.tokens}
+        if not (lemmas & RECALL_MARKERS) or not (lemmas & SAY_LEMMAS):
+            return None
+
+        said = self.context.last_said(ME)
+        if not said:
+            trace.append("記憶: 直前の発話が無い")
+            return Reply(
+                self._template("recall_empty"), policy="recall_empty", trace=trace
+            )
+        trace.append(f"記憶: 直前にこちらが言ったこと「{said}」")
+        return Reply(
+            self._template("recall").format(said=said),
+            policy="recall", trace=trace,
+        )
+
+    def _specify(self, analysis: Analysis) -> str:
+        """埋まっている語について、さらに尋ねる。無ければ空。
+
+        空きスロットの質問（gap）は「埋まっていない格」を尋ねるが、
+        会話では「埋まっている語の中身」を尋ねることの方が多い。
+
+            資料を作りました → 何を？ ではなく → どんな資料？
+            デッキを組んだ   → どんなデッキ？
+
+        目的語に限る。「病院に行きます」の行き先を「どんな病院？」と
+        尋ねるのは踏み込みすぎで、目的語ほど自然ではない。
+
+        感情の述語では、格ではなく原因を尋ねる。
+            うれしい → 何がうれしかったの？
+        experiencer（本人にしか分からない述語）が目印になる。
+        """
+        if not isinstance(analysis.ir, IR) or not analysis.ir.clauses:
+            return ""
+        clause = analysis.ir.clauses[0]
+        predicate = clause.predicate
+        if predicate is None:
+            return ""
+
+        target = clause.slots.get("WO")
+        if target is not None and target.pos == "名詞":
+            return self._template("specify").format(target=target.surface)
+
+        # 疲れ・眠気は原因を聞いても仕方がない。受け止めだけで終える。
+        tags = analysis.reasoning.tags if analysis.reasoning else []
+        if any(tag in NO_CAUSE_TAGS for tag in tags):
+            return ""
+
+        frame = self.ct.frames.get(predicate.lemma)
+        if frame is not None and frame.experiencer and not clause.slots:
+            # 述語をそのまま埋めると「何が不安の？」になる。
+            # 活用器に問いの形を作らせる（「何が不安なの？」）。
+            asked = self.ct.conjugator.realize(
+                predicate.lemma, predicate.conjugation,
+                Spec(past=predicate.has(PAST), mood=QUESTION),
+            )
+            if asked:
+                return self._template("cause").format(predicate=asked)
+            return self._template("cause_bare")
+        return ""
+
+    def _probe(self, analysis: Analysis) -> str:
+        """足りないことの問い返し。無ければ空。
+
+        依頼・願望では「問い詰めない」としていたが、望まれていたのは
+        「わかった。何を手伝えばいい？」のように、受領してから 1 つ
+        尋ねる形だった。問い詰めるのと尋ねるのは別である。
+        """
+        questions = analysis.questions()
+        return questions[0] if questions else ""
 
     def _focus(self, analysis: Analysis, tag: str) -> str:
         """返答に織り込む相手の言葉を 1 つ選ぶ。
@@ -590,7 +761,10 @@ class Responder:
             analysis.ir if isinstance(analysis.ir, IR) else None, analysis.tokens
         )
         # 尋ねた場合は、次の入力を答えとして受け取れるようにする
-        if reply.policy in ("statement_gap", "with_reasoning_gap") and (
+        # 尋ねたときの方針。ここに漏れがあると、次の入力を答えとして
+        # 受け取れなくなる（「行きます」→「名古屋」が繋がらない）。
+        # 骨格を ack_gap に変えたときに、ここを直し忘れて後退していた。
+        if reply.policy in PROBE_POLICIES and (
             analysis.gaps and analysis.gaps.gaps and isinstance(analysis.ir, IR)
         ):
             gap = analysis.gaps.gaps[0]

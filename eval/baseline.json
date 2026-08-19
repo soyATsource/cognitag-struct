@@ -13,8 +13,8 @@
       "total": 17
     },
     "policy": {
-      "passed": 33,
-      "total": 33
+      "passed": 46,
+      "total": 46
     },
     "policy_prefix": {
       "passed": 6,
@@ -29,8 +29,8 @@
       "total": 54
     },
     "text_contains": {
-      "passed": 11,
-      "total": 11
+      "passed": 7,
+      "total": 7
     },
     "text_none": {
       "passed": 8,
@@ -38,10 +38,10 @@
     }
   },
   "cases": {
-    "passed": 151,
-    "total": 152
+    "passed": 159,
+    "total": 160
   },
-  "data": "94a36a8ccfa8",
+  "data": "d9b9f8c055a8",
   "failed_ids": [
     "spec_05"
   ],

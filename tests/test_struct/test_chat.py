@@ -95,13 +95,23 @@ class Test挨拶と断片:
 
 class Test快と不快を分ける:
     def test_つらさには共感で返す(self, bot: Responder):
+        """説明ではなく受け止めの一句を返す。
+
+        以前は含意（「正論より先に、そう感じたことを認めたい」）を
+        返していたが、望まれていたのは短い受け止めだった。
+        含意は :trace に残る。
+        """
         reply = bot.respond("つらい")
-        assert "認めたい" in reply.text
+        # 受け止めの一句で始まること。後ろに問い返しが付くかは
+        # 述語によって変わるので、先頭だけを見る。
+        assert reply.text.startswith("大丈夫？")
+        assert any("認めたい" in line for line in reply.trace)
         assert "喜んで" not in reply.text
 
     def test_喜びには喜びで返す(self, bot: Responder):
         reply = bot.respond("嬉しい")
-        assert "喜んでいい" in reply.text
+        assert reply.text.startswith("それはいいね。")
+        assert any("喜んでいい" in line for line in reply.trace)
 
     @pytest.mark.parametrize("text", ["苦しい", "寂しい", "怖い", "落ち込む"])
     def test_不快側の語を拾う(self, bot: Responder, text: str):
@@ -125,8 +135,14 @@ class Test重複を出さない:
         assert "#つらさ" in tags
 
     def test_モダリティで言い切ったことを繰り返さない(self, bot: Responder):
+        """応答の型で言ったことを、含意で言い直さない。
+
+        含意そのものを返答に出さなくなったので、重複は起こりえない。
+        代わりに「返答に説明が混ざっていないこと」を見る。
+        """
         reply = bot.respond("どうしよう")
-        assert reply.text.count("決めるのは") == 1
+        assert "これからの話" not in reply.text
+        assert "決めるのは本人だ" not in reply.text
 
 
 class Test補助動詞:

@@ -5,19 +5,24 @@
 
     CogniTag> どこに？
     あなた> 名古屋
-    CogniTag> その文は構造として取れなかった      ← 문맥が無い状態
+    CogniTag> その文は構造として取れなかった      ← 文脈が無い状態
 
 「名古屋」は単独では述語を持たないので構文解析できない。しかし
 直前に「どこに？」と尋ねたのなら、これは NI スロットへの答えである。
 前の節に埋め戻せば「名古屋に行くんだな」と返せる。
 
-【覚えるものを 3 つに絞る】
+【覚えるものを 4 つに絞る】
     pending   直前に尋ねた空きスロット（何を聞いたか）
     last_ir   直前に解釈できた構造（埋め戻す先）
     topics    最近出た語（指示語の解決と、話題の反復を避けるため）
+    turns     発話そのもの（「さっき何て言った」に答えるため）
 
-会話履歴を全部持つと、どこを見ればよいかが決まらなくなる。
-「直前に何を尋ねたか」だけで、単語の返事は受け取れる。
+turns を足したのは、構造だけでは「何と言ったか」に答えられないため。
+IR は意味の骨格であって、言われた文そのものではない。復元しようとすると
+言い直しになってしまい、「さっきこう言った」の証拠にならない。
+
+ただし全部は持たない。上限を決めて古いものから捨てる。会話の全履歴を
+持ち始めると、どこを見ればよいかが決まらなくなる。
 
 【破棄の規則】
 pending は 1 回使ったら消す。答えが来たあとも残っていると、
@@ -32,6 +37,14 @@ from .ir import IR, Clause, Token
 
 # 覚えておく話題の数。指示語の解決に使うだけなので少なくてよい。
 TOPIC_LIMIT = 8
+
+# 覚えておく発話の数。「さっき何て言った」に答えるためのもので、
+# 遡れるのは直近だけでよい。多く持っても、どれを指しているか決まらない。
+TURN_LIMIT = 10
+
+# 発話の主。どちらが言ったかを分けて持つ。
+YOU = "you"
+ME = "me"
 
 # 指示語。直近の話題に置き換える。
 DEMONSTRATIVES: frozenset[str] = frozenset(
@@ -57,6 +70,23 @@ class Context:
     pending: Pending | None = None
     last_ir: IR | None = None
     topics: list[Token] = field(default_factory=list)
+    # (誰が, 何と言ったか) の並び。古いものから捨てる。
+    turns: list[tuple[str, str]] = field(default_factory=list)
+
+    def record(self, speaker: str, text: str) -> None:
+        """発話を 1 つ覚える。"""
+        if not text:
+            return
+        self.turns.append((speaker, text))
+        if len(self.turns) > TURN_LIMIT:
+            self.turns = self.turns[-TURN_LIMIT:]
+
+    def last_said(self, speaker: str) -> str:
+        """その人が最後に言ったこと。無ければ空。"""
+        for who, text in reversed(self.turns):
+            if who == speaker:
+                return text
+        return ""
 
     # -- 記録 -------------------------------------------------------------
 

@@ -65,9 +65,9 @@
 {"lemma": "勉強する", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {"WO": ["学習"]}, "volitional": true, "motion": false, "tags": ["#作業"]}
 {"lemma": "食べる", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["食事"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
 {"lemma": "飲む", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {"WO": ["飲料"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
-{"lemma": "寝る", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "寝る", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#休息", "#生活"]}
 {"lemma": "起きる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#生活"]}
-{"lemma": "休む", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#生活"]}
+{"lemma": "休む", "required": [], "optional": ["GA", "TIME"], "content_constraints": {"NI": ["住居"]}, "volitional": true, "motion": false, "tags": ["#休息", "#生活"]}
 {"lemma": "思う", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
 {"lemma": "考える", "required": [], "optional": ["GA", "WO", "TIME"], "content_constraints": {}, "volitional": true, "motion": false, "tags": ["#思考"]}
 {"lemma": "知る", "required": ["WO"], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#思考"]}
@@ -122,7 +122,7 @@
 {"lemma": "怖い", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "嫌", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "面倒", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
-{"lemma": "腹立つ", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
+{"lemma": "腹立つ", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ", "#怒り"]}
 {"lemma": "落ち込む", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "焦る", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
 {"lemma": "緊張する", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#つらさ"]}
@@ -133,4 +133,8 @@
 {"lemma": "助かる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#喜び"]}
 {"lemma": "満足する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#喜び"]}
 {"lemma": "感謝する", "required": [], "optional": ["GA", "NI", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#喜び"]}
-{"lemma": "楽になる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#喜び"]}
+{"lemma": "楽になる", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#休息", "#感情", "#喜び"]}
+{"lemma": "うれしい", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#喜び", "#感情"]}
+{"lemma": "腹が立つ", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#怒り"]}
+{"lemma": "むかつく", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#怒り"]}
+{"lemma": "イライラする", "required": [], "optional": ["GA", "TIME"], "content_constraints": {}, "volitional": false, "motion": false, "experiencer": true, "tags": ["#感情", "#怒り"]}

@@ -105,6 +105,8 @@ FINAL_SOFTENER = "な"
 FINAL_EXPLANATORY = "の"
 
 FINAL_PARTICLE_SUBPOS = "終助詞"
+# 「〜は」で言い終わる問い。述語を相手に埋めさせる形。
+TOPIC_PARTICLE = "は"
 QUESTION_MARKS = ("?", "？")
 
 # 「教えて」「手伝って」の依頼を見るための手がかり。
@@ -270,10 +272,20 @@ def _is_question(tokens: list[Token], finals: list[Token], text: str) -> str | N
     # 疑問詞がある場合に限って問いとみなす。
     #     なんでそうなるの → 問い（疑問詞あり）
     #     もう帰るの       → 問いとみなさない（疑問詞なし。断定もありうる）
-    if any(t.surface == FINAL_EXPLANATORY for t in finals) and _interrogatives(
-        tokens
-    ):
-        return "終助詞: の + 疑問詞"
+    # 「の」は終助詞として付くこともあれば、準体助詞として付くこともある。
+    # 「なぜ空は青いの」の「の」は準体助詞なので finals に入らない。
+    # 末尾の語そのものを見る。
+    body = [t for t in tokens if t.pos != "補助記号"]
+    ends_with_no = bool(body) and body[-1].surface == FINAL_EXPLANATORY
+    if ends_with_no and _interrogatives(tokens):
+        return "「の」＋疑問詞"
+
+    # 「富士山の高さは」「日本の首都は」。
+    #
+    # 係助詞「は」で言い終わる形。述語を相手に埋めさせる言い方で、
+    # 会話では問いとして働く。終助詞も疑問符も無いのでここで拾う。
+    if body and body[-1].surface == TOPIC_PARTICLE and body[-1].subpos == "係助詞":
+        return "「は」で言い終わる"
     return None
 
 

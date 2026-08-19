@@ -10,7 +10,7 @@
 {"id": "greet_01", "turns": ["おはよう"], "expect": {"modality": "GREETING", "policy": "greeting", "no_question": true}}
 {"id": "greet_02", "turns": ["こんにちは"], "expect": {"modality": "GREETING", "policy": "greeting"}}
 {"id": "greet_03", "turns": ["こんばんは"], "expect": {"modality": "GREETING", "policy": "greeting"}}
-{"id": "greet_04", "turns": ["ありがとう"], "expect": {"modality": "GREETING", "text_none": "取れなかった"}}
+{"id": "greet_04", "turns": ["ありがとう"], "expect": {"policy": "thanks", "text_none": "取れなかった"}}
 
 # --- モダリティ: 依頼 -------------------------------------------------------
 {"id": "req_01", "turns": ["手伝ってください"], "expect": {"modality": "REQUEST", "policy": "request"}}
@@ -35,11 +35,14 @@
 {"id": "spec_06", "turns": ["間に合うかもしれない"], "expect": {"modality": "SPECULATION"}}
 
 # --- モダリティ: 開いた問い ---------------------------------------------------
-{"id": "qopen_01", "turns": ["なぜ空が青いのか"], "expect": {"modality": "Q_OPEN", "policy": "q_open", "text_contains": "答えられない"}}
+{"id": "qopen_01", "turns": ["なぜ空が青いのか"], "expect": {"modality": "Q_OPEN", "policy": "fact:sky_blue"}, "note": "事実の表に載せたので答えられる。載っていない問いは q_open のまま"}
+{"id": "qopen_07", "turns": ["なぜ海が青いのか"], "expect": {"modality": "Q_OPEN", "policy": "q_open"}, "note": "表に無い問い。境界が動いていないことの確認"}
+{"id": "recall_01", "turns": ["疲れた", "さっき何て言った"], "expect": {"policy": "recall"}, "note": "発話そのものを覚えている"}
+{"id": "recall_02", "turns": ["さっき何て言った"], "expect": {"policy": "recall_empty"}, "note": "覚えていなければそう言う"}
 {"id": "qopen_02", "turns": ["どこに行きますか"], "expect": {"modality": "Q_OPEN", "policy": "q_open"}}
 {"id": "qopen_03", "turns": ["いつ終わりますか"], "expect": {"modality": "Q_OPEN"}}
 {"id": "qopen_04", "turns": ["誰が来ますか"], "expect": {"modality": "Q_OPEN"}}
-{"id": "qopen_05", "turns": ["これは何ですか"], "expect": {"modality": "Q_OPEN", "text_contains": "答えられない"}}
+{"id": "qopen_05", "turns": ["これは何ですか"], "expect": {"modality": "Q_OPEN", "policy": "q_open"}}
 {"id": "qopen_06", "turns": ["どうすればいいですか"], "expect": {"modality": "Q_OPEN"}}
 
 # --- モダリティ: 肯否の問い ---------------------------------------------------
@@ -64,7 +67,7 @@
 {"id": "stmt_06", "turns": ["電車が遅れています"], "expect": {"modality": "STATEMENT"}}
 
 # --- 述語のタグが引けること（frames.jsonl の 136 語）------------------------
-{"id": "tag_move_01", "turns": ["行きます"], "expect": {"tags_all": ["#移動"], "question_contains": "どこ", "policy": "with_reasoning_gap"}}
+{"id": "tag_move_01", "turns": ["行きます"], "expect": {"tags_all": ["#移動"], "question_contains": "どこ", "policy": "ack_gap"}}
 {"id": "tag_move_02", "turns": ["帰ります"], "expect": {"tags_all": ["#移動"]}}
 {"id": "tag_move_03", "turns": ["駅に着きました"], "expect": {"tags_all": ["#移動"]}}
 {"id": "tag_work_01", "turns": ["資料を作ります"], "expect": {"tags_all": ["#作業"]}}
@@ -142,14 +145,14 @@
 {"id": "conv_01", "turns": ["行きます", "名古屋"], "expect": {"policy_prefix": "answered", "text_contains": "名古屋に行きます"}}
 {"id": "conv_02", "turns": ["行きます", "東京"], "expect": {"policy_prefix": "answered", "text_contains": "東京"}}
 {"id": "conv_03", "turns": ["行きます", "名古屋", "東京"], "expect": {"policy_prefix": "answered"}, "known_gap": true, "note": "質問を消した後なので answered にならない。訂正の受け取りは未実装"}
-{"id": "conv_04", "turns": ["行きます", "名古屋が好き"], "expect": {"policy_prefix": "with_reasoning"}, "note": "述語があれば新しい発話として扱う"}
+{"id": "conv_04", "turns": ["行きます", "名古屋が好き"], "expect": {"policy_prefix": "ack"}, "note": "述語があれば新しい発話として扱う"}
 {"id": "conv_05", "turns": ["会います", "田中さん"], "expect": {"policy_prefix": "answered"}}
 {"id": "conv_06", "turns": ["つらい", "疲れた"], "expect": {"tags_all": ["#疲労"]}}
 {"id": "conv_07", "turns": ["おはよう", "行きます"], "expect": {"question_contains": "どこ"}, "note": "挨拶の後も通常どおり動く"}
-{"id": "conv_08", "turns": ["名古屋"], "expect": {"policy": "with_reasoning"}, "note": "尋ねていないので答え扱いしない"}
+{"id": "conv_08", "turns": ["名古屋"], "expect": {"policy": "about_noun"}, "note": "尋ねていないので答え扱いしない。名詞だけならその語について尋ねる"}
 
 # --- 感情の受け止め ---------------------------------------------------------
-{"id": "emo_01", "turns": ["つらい"], "expect": {"tags_all": ["#つらさ"], "text_contains": "しんどい", "no_question": true}}
+{"id": "emo_01", "turns": ["つらい"], "expect": {"tags_all": ["#つらさ"], "text_contains": "大丈夫", "no_question": true}, "note": "説明ではなく受け止めの一句を返す"}
 {"id": "emo_02", "turns": ["疲れました"], "expect": {"tags_all": ["#疲労"], "no_question": true}}
 {"id": "emo_03", "turns": ["悲しい"], "expect": {"tags_all": ["#つらさ"]}}
 {"id": "emo_04", "turns": ["嬉しい"], "expect": {"tags_all": ["#喜び"]}}
@@ -163,9 +166,12 @@
 {"id": "emo_12", "turns": ["安心しました"], "expect": {"tags_all": ["#喜び"]}}
 
 # --- 含意が重複しないこと ---------------------------------------------------
-{"id": "impl_01", "turns": ["つらい"], "expect": {"text_none": "気持ちの話だな。しんどい話だな"}, "note": "粗いタグと具体的なタグで同じことを 2 回言わない"}
-{"id": "impl_02", "turns": ["疲れた"], "expect": {"text_contains": "疲れ"}}
-{"id": "impl_03", "turns": ["手伝ってほしい"], "expect": {"text_none": "そうしたいのだな。そうしたいのだな"}, "note": "応答の型で言い切ったことを含意で繰り返さない"}
+{"id": "impl_01", "turns": ["つらい"], "expect": {"text_none": "しんどい話"}, "note": "説明は返答に出さない（:trace には残る）"}
+{"id": "impl_02", "turns": ["疲れた"], "expect": {"policy": "ack_suggest", "text_contains": "お疲れさま"}, "note": "受け止めの一句に提案を添える。説明はしない"}
+{"id": "suggest_01", "turns": ["休みたい"], "expect": {"text_contains": "休憩"}, "note": "休息は勧める対象"}
+{"id": "suggest_02", "turns": ["腹が立つ"], "expect": {"text_contains": "落ち着いて"}, "note": "怒りはつらさと分けて宥める"}
+{"id": "suggest_03", "turns": ["困っています"], "expect": {"policy": "ack_suggest"}}
+{"id": "impl_03", "turns": ["手伝ってほしい"], "expect": {"text_none": "望みの話"}, "note": "応答の型で言い切ったことを含意で繰り返さない"}
 
 # --- 空きスロットの質問 -----------------------------------------------------
 {"id": "slot_01", "turns": ["行きます"], "expect": {"question_contains": "どこ"}}
@@ -178,10 +184,10 @@
 {"id": "slot_08", "turns": ["行ってください"], "expect": {"no_question": true}, "note": "依頼では問い詰めない"}
 
 # --- 答えられないと返すこと -------------------------------------------------
-{"id": "know_01", "turns": ["東京の人口は何人ですか"], "expect": {"modality": "Q_OPEN", "text_contains": "答えられない"}, "note": "現状は落ちる。Sudachi が「何人です」を 1 語にするため疑問詞「何」が見えず、Q_YESNO と判定される"}
-{"id": "know_02", "turns": ["富士山の高さを教えてください"], "expect": {"text_contains": "答えられない"}, "note": "知識を要する依頼を受領しないこと"}
-{"id": "know_03", "turns": ["どうして雨が降るのか"], "expect": {"text_contains": "答えられない"}}
-{"id": "know_04", "turns": ["いつ雨が止みますか"], "expect": {"text_contains": "答えられない"}}
+{"id": "know_01", "turns": ["東京の人口は何人ですか"], "expect": {"modality": "Q_OPEN", "policy": "q_open"}, "note": "Sudachi が「何人です」を 1 語にする形。疑問詞を名詞から拾えていること"}
+{"id": "know_02", "turns": ["富士山の高さを教えてください"], "expect": {"policy": "no_knowledge"}, "note": "知識を要する依頼を受領しないこと"}
+{"id": "know_03", "turns": ["どうして雨が降るのか"], "expect": {"policy": "q_open"}}
+{"id": "know_04", "turns": ["いつ雨が止みますか"], "expect": {"policy": "q_open"}}
 
 # --- 会話の口（配信コメントを想定）-----------------------------------------
 {"id": "chat_ack_01", "turns": ["なるほど"], "expect": {"policy": "backchannel", "text_none": "取れなかった"}}
@@ -192,7 +198,9 @@
 {"id": "chat_excl_03", "turns": ["ｗｗ"], "expect": {"policy": "exclamation"}, "note": "全角も半角に寄せる"}
 {"id": "chat_excl_04", "turns": ["すごー"], "expect": {"policy": "exclamation"}, "note": "伸ばし棒を落としてから引く"}
 {"id": "chat_excl_05", "turns": ["天才"], "expect": {"policy": "exclamation"}}
-{"id": "chat_hail_01", "turns": ["おつ"], "expect": {"policy": "hail", "text_none": "取れなかった"}}
+{"id": "chat_hail_01", "turns": ["おつ"], "expect": {"policy": "appreciation", "text_none": "取れなかった"}, "note": "「おつ」は出会いの挨拶ではなく労い。#挨拶 に混ぜると「はじめまして」と返る"}
+{"id": "chat_bye_01", "turns": ["またね"], "expect": {"policy": "farewell"}, "note": "別れも挨拶とは分ける"}
+{"id": "chat_bye_02", "turns": ["おやすみ"], "expect": {"policy": "farewell"}}
 {"id": "chat_hail_02", "turns": ["初見です"], "expect": {"policy": "hail"}}
 {"id": "chat_hail_03", "turns": ["こんばんはー"], "expect": {"text_none": "時の話"}, "note": "伸ばし棒があると こんばん + はー に割れていた"}
 {"id": "chat_thanks_01", "turns": ["ありがとう"], "expect": {"policy": "thanks"}}

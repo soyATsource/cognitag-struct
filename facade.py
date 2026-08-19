@@ -32,6 +32,7 @@ from pathlib import Path
 from .category_dict import CategoryDict, Entry
 from .compose import Composer, PatternSet
 from .inflect import Conjugator
+from .facts import FactTable
 from .frames import FrameDict
 from .gap import GapReport, QuestionTemplates, detect
 from .generate import Style, Utterance, generate
@@ -41,6 +42,7 @@ from .modality import ModalityResult, detect_modality, needs_knowledge
 from .parse import Unparsable, parse
 from .phrase_dict import PhraseDict
 from .reasoning import ImplicationTable, Reasoning, reason
+from .selfdesc import SelfDescription
 from .tokenizer import Tokenizer
 
 # 同梱データの場所。パッケージと一緒に配られる。
@@ -60,6 +62,8 @@ REASONING = "reasoning.toml"
 CONTENT_POS: frozenset[str] = frozenset({"名詞", "動詞", "形容詞", "形状詞", "副詞"})
 CONJUGATION = "conjugation.toml"
 PATTERNS = "patterns.jsonl"
+SELF = "self.toml"
+FACTS = "facts.jsonl"
 
 
 @dataclass
@@ -164,6 +168,10 @@ class CogniTag:
         # 返答を組み立てる側。活用表と文型。
         # 固定文を並べるのではなく、単語と助詞の並びから作る。
         self.conjugator = Conjugator.load(base / CONJUGATION)
+        # 自分について書いたもの。世界の知識とは別物で、有限。
+        self.selfdesc = SelfDescription.load(base / SELF)
+        # よく聞かれる事実。百科事典ではなく、答えを用意したものだけ。
+        self.facts = FactTable.load(base / FACTS)
         # 関連語を引くために辞書とフレームも渡す。
         # 「行く」の NI は場所、という宣言をフレームが持ち、
         # その場所カテゴリの語をカテゴリ辞書が持っている。

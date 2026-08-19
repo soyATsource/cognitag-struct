@@ -311,13 +311,13 @@
 {"id": "excl_017", "surface": "面白い", "lemma": "面白い", "pos": "名詞", "form": "一般語", "content": ["感嘆"], "presupposition": [], "facet": {"physical": 0.0, "psychological": 1.0, "temporal": 0.0, "logical": 0.0}, "note": "会話の口の語", "frequency": 190}
 {"id": "excl_018", "surface": "おもろい", "lemma": "おもろい", "pos": "名詞", "form": "一般語", "content": ["感嘆"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "excl_019", "surface": "ヤバい", "lemma": "ヤバい", "pos": "名詞", "form": "一般語", "content": ["感嘆"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
-{"id": "hail_001", "surface": "おつ", "lemma": "おつ", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
-{"id": "hail_002", "surface": "乙", "lemma": "乙", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
-{"id": "hail_003", "surface": "お疲れ", "lemma": "お疲れ", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
-{"id": "hail_004", "surface": "おつかれ", "lemma": "おつかれ", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
+{"id": "hail_001", "surface": "おつ", "lemma": "おつ", "pos": "名詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
+{"id": "hail_002", "surface": "乙", "lemma": "乙", "pos": "名詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
+{"id": "hail_003", "surface": "お疲れ", "lemma": "お疲れ", "pos": "名詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
+{"id": "hail_004", "surface": "おつかれ", "lemma": "おつかれ", "pos": "名詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "hail_005", "surface": "初見", "lemma": "初見", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "hail_006", "surface": "はじめまして", "lemma": "はじめまして", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
-{"id": "hail_007", "surface": "ノシ", "lemma": "ノシ", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
+{"id": "hail_007", "surface": "ノシ", "lemma": "ノシ", "pos": "名詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "hail_008", "surface": "ちーす", "lemma": "ちーす", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "hail_009", "surface": "やあ", "lemma": "やあ", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
 {"id": "hail_010", "surface": "どうも", "lemma": "どうも", "pos": "名詞", "form": "一般語", "content": ["挨拶"], "presupposition": [], "facet": {}, "note": "会話の口の語", "frequency": 60}
@@ -503,3 +503,23 @@
 {"id": "food_h001", "surface": "食", "lemma": "食", "pos": "名詞", "form": "一般語", "content": ["食事"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": false, "note": "複合語の主要部"}
 {"id": "food_h002", "surface": "飯", "lemma": "飯", "pos": "名詞", "form": "一般語", "content": ["食事"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": false, "note": "複合語の主要部"}
 {"id": "food_h003", "surface": "物", "lemma": "物", "pos": "名詞", "form": "一般語", "content": ["食事"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": false, "note": "複合語の主要部"}
+{"id": "bye_001", "surface": "おやすみ", "lemma": "おやすみ", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_002", "surface": "おやすみなさい", "lemma": "おやすみなさい", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_003", "surface": "さようなら", "lemma": "さようなら", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_004", "surface": "さよなら", "lemma": "さよなら", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_005", "surface": "じゃあね", "lemma": "じゃあね", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_006", "surface": "ばいばい", "lemma": "ばいばい", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_007", "surface": "またね", "lemma": "またね", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_008", "surface": "また今度", "lemma": "また今度", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_009", "surface": "また明日", "lemma": "また明日", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "bye_011", "surface": "バイバイ", "lemma": "バイバイ", "pos": "感動詞", "form": "一般語", "content": ["別れ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "thx_003", "surface": "おつかれさま", "lemma": "おつかれさま", "pos": "感動詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "thx_004", "surface": "おつかれさまです", "lemma": "おつかれさまです", "pos": "感動詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "thx_006", "surface": "お疲れさま", "lemma": "お疲れさま", "pos": "感動詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "thx_007", "surface": "お疲れ様", "lemma": "お疲れ様", "pos": "感動詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "thx_008", "surface": "ご苦労さま", "lemma": "ご苦労さま", "pos": "感動詞", "form": "一般語", "content": ["労い"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "会話の口。構造を持たない"}
+{"id": "feel_001", "surface": "腹が立つ", "lemma": "腹が立つ", "pos": "動詞", "form": "慣用句", "content": ["怒り"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "複数形態素に割れる感情表現。句として扱う"}
+{"id": "feel_002", "surface": "頭にくる", "lemma": "頭にくる", "pos": "動詞", "form": "慣用句", "content": ["怒り"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "複数形態素に割れる感情表現。句として扱う"}
+{"id": "feel_003", "surface": "気に障る", "lemma": "気に障る", "pos": "動詞", "form": "慣用句", "content": ["怒り"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "複数形態素に割れる感情表現。句として扱う"}
+{"id": "feel_004", "surface": "気が重い", "lemma": "気が重い", "pos": "動詞", "form": "慣用句", "content": ["つらさ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "複数形態素に割れる感情表現。句として扱う"}
+{"id": "feel_005", "surface": "胸が痛む", "lemma": "胸が痛む", "pos": "動詞", "form": "慣用句", "content": ["つらさ"], "presupposition": [], "facet": {}, "frequency": 0, "everyday": true, "note": "複数形態素に割れる感情表現。句として扱う"}

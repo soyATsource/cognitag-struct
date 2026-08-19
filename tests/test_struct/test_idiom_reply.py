@@ -115,7 +115,11 @@ class Test言い回しが繰り返さない:
         assert any("かわいい" in t for t in texts)
 
     def test_言い回しは一巡して戻る(self, bot: Responder):
-        """有限の一覧を順に使う。尽きたら先頭へ戻る。"""
-        texts = [bot.respond("なるほど").text for _ in range(9)]
-        assert texts[0] == texts[4]
+        """有限の一覧を順に使う。尽きたら先頭へ戻る。
+
+        一覧の件数は data 側で増減するので、件数を直書きしない。
+        「複数ある」ことと「いつか先頭へ戻る」ことだけを見る。
+        """
+        texts = [bot.respond("なるほど").text for _ in range(12)]
         assert len(set(texts)) > 1
+        assert texts[0] in texts[1:]

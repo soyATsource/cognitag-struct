@@ -181,14 +181,13 @@ class Conjugator:
     def _tail(self, spec: Spec, adjective: bool) -> str:
         """態度と終助詞。本体の後ろに足す。"""
         if spec.mood == QUESTION:
-            # 丁寧なら「ますか」、普通体なら「のか」。
-            # 普通体に「か」を直付けすると「行くか」となり詰問に響く。
-            head = "か" if spec.polite else "のか"
+            # 「のか」は詰問に聞こえる。会話としては「の？」の方が近い。
+            head = "か" if spec.polite else "の？"
         elif spec.mood == CONFIRM:
             # 本体は普通体なので、丁寧さはここで出す。
-            head = "んですね" if spec.polite else "んだな"
+            head = "んですね" if spec.polite else "んだね"
         elif spec.mood == SUPPOSE:
-            head = "でしょう" if spec.polite else "だろう"
+            head = "でしょう" if spec.polite else "だろうね"
         else:
             head = ""
         return head + spec.final

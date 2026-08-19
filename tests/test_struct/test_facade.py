@@ -37,7 +37,8 @@ class Test引数なしで使える:
         for name in (
             "axes.jsonl", "phrases.jsonl", "frames.jsonl",
             "questions.toml", "generation_style.toml", "reasoning.toml",
-            "conjugation.toml", "patterns.jsonl",
+            "conjugation.toml", "patterns.jsonl", "self.toml",
+            "facts.jsonl",
         ):
             shutil.copy(ct.data_dir / name, tmp_path / name)
 

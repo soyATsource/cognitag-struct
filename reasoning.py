@@ -77,6 +77,20 @@ class Implication:
     label: str
     so: str
     because: str = ""
+    # 相手に返す短い一句。「お疲れさま。」「それは大変だね。」
+    #
+    # label / because / so は「システムが何を考えたか」であって、
+    # 相手に言うことではなかった。説明を返答に出すと
+    # 「移動の話だな。行き先と時刻で決まるなら…」になる。
+    # 相手が受け取りたいのは受け止めの一句と問い返しだけなので、
+    # 返答にはこれを使い、説明は :trace に残す。
+    ack: str = ""
+    # こちらから行動を勧める一句。「今日はもう休もう。」
+    #
+    # 受け止め（ack）が相手の状態を認めるものであるのに対し、
+    # これは次にどうするかを提案する。踏み込む度合いが違うので分ける。
+    # 提案を持たないタグの方が多い（勧められることが無い話題もある）。
+    suggest: str = ""
 
     def as_sentence(self) -> str:
         """「これは<label>だ。<because>なら<so>」の形にする。"""
@@ -95,6 +109,24 @@ class Reasoning:
     @property
     def has_content(self) -> bool:
         return bool(self.implications)
+
+    def acknowledgement(self) -> str:
+        """受け止めの一句。先に出たタグを優先する。
+
+        述語由来のタグが先に入るので、内容に近いものが選ばれる。
+        どのタグにも一句が無ければ空。
+        """
+        for implication in self.implications:
+            if implication.ack:
+                return implication.ack
+        return ""
+
+    def suggestion(self) -> str:
+        """提案の一句。先に出たタグを優先する。無ければ空。"""
+        for implication in self.implications:
+            if implication.suggest:
+                return implication.suggest
+        return ""
 
     def summary(self) -> str:
         """タグの一覧。trace 表示用。"""
@@ -124,6 +156,8 @@ class ImplicationTable:
                 label=str(body.get("label", tag)),
                 so=str(body.get("so", "")),
                 because=str(body.get("because", "")),
+                ack=str(body.get("ack", "")),
+                suggest=str(body.get("suggest", "")),
             )
         return cls(table)
 
@@ -202,8 +236,11 @@ def collect_tags(
 # タグ自体は両方残す。落とすのは含意（返答に出る文）だけ。
 # タグは分類の記録なので、消すと後から追えなくなる。
 SUBSUMED_BY: dict[str, frozenset[str]] = {
-    "#感情": frozenset({"#つらさ", "#喜び", "#疲労"}),
+    "#感情": frozenset({"#つらさ", "#喜び", "#疲労", "#怒り"}),
     "#変化": frozenset({"#困難", "#達成"}),
+    # 疲れはつらさの一種だが、返し方が違う。「大丈夫？」ではなく
+    # 「お疲れさま」と受けたいので、疲労がある場合はつらさを落とす。
+    "#つらさ": frozenset({"#疲労"}),
 }
 
 

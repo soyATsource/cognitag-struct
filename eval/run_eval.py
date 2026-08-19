@@ -71,10 +71,11 @@ MODALITY_NAMES: frozenset[str] = frozenset(m.value for m in Modality)
 # 「問い返した」と言えるのはこの方針を選んだときだけ。
 #
 # Analysis.questions() は空きスロットがあれば埋まるが、実際に尋ねるかどうかは
-# Responder が決める（推量・依頼・願望では問い詰めない。chat.py:73 の NO_PROBE）。
-# 「行きますか」の解析には「どこに？」が入るが、返答は問い返していない。
-# 測るべきは利用者に届いた返答なので、方針の方を見る。
-PROBE_POLICIES: frozenset[str] = frozenset({"statement_gap", "with_reasoning_gap"})
+# Responder が決める。測るべきは利用者に届いた返答なので、方針の方を見る。
+#
+# 本体から取り込む。ここに書き写すと、方針の名前を変えたときに片方だけ
+# 古くなる（実際に ack_gap を足したとき、そうなった）。
+from cognitag_struct.chat import PROBE_POLICIES  # noqa: E402
 
 
 class CaseError(ValueError):
