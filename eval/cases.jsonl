@@ -14,7 +14,7 @@
 
 # --- モダリティ: 依頼 -------------------------------------------------------
 {"id": "req_01", "turns": ["手伝ってください"], "expect": {"modality": "REQUEST", "policy": "request"}}
-{"id": "req_02", "turns": ["教えてください"], "expect": {"modality": "REQUEST", "policy": "request"}}
+{"id": "req_02", "turns": ["教えてください"], "expect": {"modality": "REQUEST", "policy": "no_knowledge"}, "note": "知識を差し出す依頼は受領しない。受けると実行できない約束になる"}
 {"id": "req_03", "turns": ["確認してもらえますか"], "expect": {"modality": "REQUEST", "policy": "request"}}
 {"id": "req_04", "turns": ["お願いします"], "expect": {"modality": "REQUEST"}}
 {"id": "req_05", "turns": ["資料を送ってください"], "expect": {"modality": "REQUEST", "no_question": true}, "note": "依頼では空きスロットを問い詰めない"}
@@ -43,7 +43,7 @@
 {"id": "qopen_06", "turns": ["どうすればいいですか"], "expect": {"modality": "Q_OPEN"}}
 
 # --- モダリティ: 肯否の問い ---------------------------------------------------
-{"id": "qyn_01", "turns": ["明日は雨ですか"], "expect": {"modality": "Q_YESNO", "policy": "q_yesno"}}
+{"id": "qyn_01", "turns": ["明日は雨ですか"], "expect": {"modality": "Q_YESNO", "policy": "q_yesno_fact", "text_contains": "外を見ないと"}, "note": "天気は観測が要る。真偽一般ではなく理由を言い分ける"}
 {"id": "qyn_02", "turns": ["終わりましたか"], "expect": {"modality": "Q_YESNO"}}
 {"id": "qyn_03", "turns": ["これでいいですか"], "expect": {"modality": "Q_YESNO"}}
 {"id": "qyn_04", "turns": ["行きますか"], "expect": {"modality": "Q_YESNO", "no_question": true}, "note": "問いに問いで返さない"}
@@ -111,8 +111,8 @@
 {"id": "noun_num_01", "turns": ["3人来ました"], "expect": {"tags_all": ["#数量"]}}
 
 # --- 名詞の意味タグ（本体辞書の接続で解消したいもの）------------------------
-{"id": "gap_noun_01", "turns": ["病院に行きます"], "expect": {"tags_all": ["#移動", "#場所"]}, "known_gap": true, "note": "「病院」は地名でないので #場所 が付かない"}
-{"id": "gap_noun_02", "turns": ["会社に行きます"], "expect": {"tags_all": ["#移動", "#場所"]}, "known_gap": true, "note": "同上"}
+{"id": "gap_noun_01", "turns": ["病院に行きます"], "expect": {"tags_all": ["#移動", "#場所"]}, "note": "カテゴリ辞書で解消済み。地名でない場所を引けること"}
+{"id": "gap_noun_02", "turns": ["会社に行きます"], "expect": {"tags_all": ["#移動", "#場所"]}, "note": "カテゴリ辞書で解消済み"}
 {"id": "gap_noun_03", "turns": ["薬を飲みました"], "expect": {"tags_all": ["#生活", "#健康"]}, "known_gap": true, "note": "#健康 は含意表にも無い。名詞タグ辞書と同時に増やす対象"}
 {"id": "gap_noun_04", "turns": ["料理を作ります"], "expect": {"tags_all": ["#作業", "#料理"]}, "known_gap": true, "note": "名詞由来の内容タグが取れれば返答を具体化できる"}
 {"id": "gap_noun_05", "turns": ["熱があります"], "expect": {"tags_all": ["#健康"]}, "known_gap": true, "note": "「熱」から体調の話だと分かってほしい。#健康 は含意表にも無いので、名詞タグ辞書と同時に追加する対象"}
@@ -179,6 +179,28 @@
 
 # --- 答えられないと返すこと -------------------------------------------------
 {"id": "know_01", "turns": ["東京の人口は何人ですか"], "expect": {"modality": "Q_OPEN", "text_contains": "答えられない"}, "note": "現状は落ちる。Sudachi が「何人です」を 1 語にするため疑問詞「何」が見えず、Q_YESNO と判定される"}
-{"id": "know_02", "turns": ["富士山の高さを教えてください"], "expect": {"text_contains": "答えられない"}, "known_gap": true, "note": "知識を要する依頼を「承知した」と受領してしまう。依頼の中身が知識かどうかを見ていない"}
+{"id": "know_02", "turns": ["富士山の高さを教えてください"], "expect": {"text_contains": "答えられない"}, "note": "知識を要する依頼を受領しないこと"}
 {"id": "know_03", "turns": ["どうして雨が降るのか"], "expect": {"text_contains": "答えられない"}}
 {"id": "know_04", "turns": ["いつ雨が止みますか"], "expect": {"text_contains": "答えられない"}}
+
+# --- 会話の口（配信コメントを想定）-----------------------------------------
+{"id": "chat_ack_01", "turns": ["なるほど"], "expect": {"policy": "backchannel", "text_none": "取れなかった"}}
+{"id": "chat_ack_02", "turns": ["それな"], "expect": {"policy": "backchannel"}}
+{"id": "chat_ack_03", "turns": ["わかる"], "expect": {"policy": "backchannel"}}
+{"id": "chat_excl_01", "turns": ["草"], "expect": {"policy": "exclamation", "text_none": "取れなかった"}}
+{"id": "chat_excl_02", "turns": ["www"], "expect": {"policy": "exclamation"}, "note": "繰り返しを畳んでから引く"}
+{"id": "chat_excl_03", "turns": ["ｗｗ"], "expect": {"policy": "exclamation"}, "note": "全角も半角に寄せる"}
+{"id": "chat_excl_04", "turns": ["すごー"], "expect": {"policy": "exclamation"}, "note": "伸ばし棒を落としてから引く"}
+{"id": "chat_excl_05", "turns": ["天才"], "expect": {"policy": "exclamation"}}
+{"id": "chat_hail_01", "turns": ["おつ"], "expect": {"policy": "hail", "text_none": "取れなかった"}}
+{"id": "chat_hail_02", "turns": ["初見です"], "expect": {"policy": "hail"}}
+{"id": "chat_hail_03", "turns": ["こんばんはー"], "expect": {"text_none": "時の話"}, "note": "伸ばし棒があると こんばん + はー に割れていた"}
+{"id": "chat_thanks_01", "turns": ["ありがとう"], "expect": {"policy": "thanks"}}
+{"id": "chat_thanks_02", "turns": ["ありがとうございますー！"], "expect": {"policy": "thanks"}}
+{"id": "chat_cheer_01", "turns": ["がんばって"], "expect": {"policy": "encouragement"}, "note": "励ましを依頼として受領しない"}
+{"id": "chat_cheer_02", "turns": ["応援してます"], "expect": {"policy": "encouragement"}, "note": "サ変の畳み込み後の見出し語で引けること"}
+{"id": "chat_q_01", "turns": ["なんでそうなるの"], "expect": {"modality": "Q_OPEN"}, "note": "終助詞「の」＋疑問詞で問いとみなす"}
+{"id": "chat_q_02", "turns": ["何時までやるの"], "expect": {"modality": "Q_OPEN"}}
+{"id": "chat_q_03", "turns": ["もう帰るの"], "expect": {"modality": "STATEMENT"}, "note": "疑問詞が無ければ断定もありうる。問いと決めつけない"}
+{"id": "chat_sym_01", "turns": ["。。。"], "expect": {"policy": "empty"}, "note": "記号だけ。短く言い直せとは返さない"}
+{"id": "chat_sym_02", "turns": ["？？？"], "expect": {"policy": "empty"}}

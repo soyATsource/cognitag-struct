@@ -282,6 +282,25 @@ def run(cases: list[Case]) -> list[CaseResult]:
 # --- 集計と表示 -------------------------------------------------------------
 
 
+def data_fingerprint() -> str:
+    """データファイルの指紋。
+
+    【辞書を更新したら判定が変わりうる】
+    決定的であることと、更新しても壊れないことは別の話である。
+    結果と一緒に指紋を残しておけば、差分が出たときに
+    「データが変わったのか、コードが変わったのか」を切り分けられる。
+    """
+    import hashlib
+
+    digest = hashlib.sha256()
+    data = HERE.parent / "data"
+    for path in sorted(data.iterdir()):
+        if path.suffix in (".jsonl", ".toml"):
+            digest.update(path.name.encode("utf-8"))
+            digest.update(path.read_bytes())
+    return digest.hexdigest()[:12]
+
+
 def summarize(results: list[CaseResult]) -> dict:
     """観点別・全体の集計。known_gap は本体の点数に混ぜない。
 
@@ -299,6 +318,7 @@ def summarize(results: list[CaseResult]) -> dict:
             bucket["passed"] += 1 if check.passed else 0
 
     return {
+        "data": data_fingerprint(),
         "cases": {
             "passed": sum(1 for r in main if r.passed),
             "total": len(main),
@@ -374,6 +394,13 @@ def compare(summary: dict, previous_path: Path) -> int:
     print("=" * 62)
 
     regressed = False
+
+    old_data = previous.get("data")
+    if old_data and old_data != summary["data"]:
+        print(f"\nデータが変わっている: {old_data} → {summary['data']}")
+        print("  判定の差はデータ由来かもしれない。コードだけを疑わないこと。")
+    elif old_data:
+        print(f"\nデータは同一: {summary['data']}")
 
     before = previous.get("cases", {})
     delta = summary["cases"]["passed"] - before.get("passed", 0)
